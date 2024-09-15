@@ -1,0 +1,15 @@
+name: Simple CI Workflow
+
+on: 
+  push:
+  pull_request:
+
+jobs:
+  print-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Print Hello Message
+        run: echo "This is a simple CI workflow. Hello from GitHub Actions!"

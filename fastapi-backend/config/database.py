@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb+srv://<username>:<password>@cluster0.3xx3wpc.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://admin:admin123@cluster0.tfjwq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 db = client.events
 

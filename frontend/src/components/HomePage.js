@@ -5,7 +5,7 @@ import '../styles/App.css';
 const HomePage = () => {
   const [events, setEvents] = useState([]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     // Fetch data from FastAPI backend
     fetch('http://127.0.0.1:8000/')
       .then((response) => response.json())
@@ -15,7 +15,7 @@ const HomePage = () => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, []); */
 
   return (
     <div className="home-container">
@@ -25,7 +25,7 @@ const HomePage = () => {
         <Link to="/login" className="button">Log In</Link>
       </div>
       
-      <div className="events-container">
+   <div className="events-container">
         <h2>Events:</h2>
         {events.length > 0 ? (
           <ul>
@@ -37,7 +37,7 @@ const HomePage = () => {
           <p>No events found</p>
         )}
       </div>
-    </div>
+    </div> 
   );
 };
 

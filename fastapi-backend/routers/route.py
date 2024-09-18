@@ -8,6 +8,8 @@ router = APIRouter()
 
 
 
+
+
 # Get request methods
 @router.get("/")
 async def get_events():

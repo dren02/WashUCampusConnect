@@ -1,13 +1,30 @@
-def individual_serializer(events) -> dict:
+# Serializer for events
+def event_serializer(event) -> dict:
     return {
-        "id": str(events["_id"]),
-        "name": events["name"],
-        "details_of_event": events["details_of_event"],
-        "date": events["date"],
-        "time": events["time"],
-        "address": events["address"]
+        "id": str(event["_id"]),
+        "name": event["name"],
+        "details_of_event": event["details_of_event"],
+        "date": event["date"],
+        "time": event["time"],
+        "address": event["address"]
+    }
+ 
+# Serializer for users
+def user_serializer(user) -> dict:
+    return {
+        "id": str(user["_id"]),
+        "username": user["username"],
+        "password": user["password"]  # Since you're not hashing passwords
     }
 
-
-def list_serializer(events) -> list:
-    return [individual_serializer(event) for event in events]
+# General list serializer that checks the document type
+def list_serializer(documents) -> list:
+    serialized_list = []
+    
+    for doc in documents:
+        if "name" in doc:  # This means it's an event
+            serialized_list.append(event_serializer(doc))
+        elif "username" in doc:  # This means it's a user
+            serialized_list.append(user_serializer(doc))
+    
+    return serialized_list

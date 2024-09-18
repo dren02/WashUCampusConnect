@@ -1,15 +1,34 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+
+  const navigate= useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login attempted with:', { username, password });
     //  handle the login logic
+
+    // Example login logic (replace with your actual authentication logic later)
+    // ie make an API call here instead of this hard coded username and pw
+    if (username === 'admin' && password === 'password') {
+      // Successful login
+      navigate('/main'); // Navigate to MainPage
+    } else {
+      // Failed login
+      setError('Invalid username or password');
+    }
   };
+  
+
+  
 
   return (
     <div className="login-container">

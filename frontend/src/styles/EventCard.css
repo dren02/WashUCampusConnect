@@ -1,0 +1,30 @@
+
+.event-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    background-color: #fff;
+  }
+  
+  .event-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .event-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .event-date,
+  .event-location {
+    margin: 5px 0;
+  }
+  
+  .event-description {
+    margin-top: 10px;
+    color: #555;
+  }
+  

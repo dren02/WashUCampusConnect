@@ -1,19 +1,16 @@
 from fastapi import APIRouter
 from models.events import Event
-from config.database import collection_name
+from config.database import events_collection as collection_name
 from schema.schemas import list_serializer
 from bson import ObjectId
 
 router = APIRouter()
 
-
-
-
-
 # Get request methods
 @router.get("/")
 async def get_events():
     events = list_serializer(collection_name.find())
+    print(events)
     return events
 
 # Post request methods

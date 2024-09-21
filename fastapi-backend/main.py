@@ -1,3 +1,4 @@
+#main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers.route import router as event_router  # For event-related routes
@@ -22,3 +23,4 @@ app.include_router(event_router, prefix = "/events")  # Event routes under "/eve
 app.include_router(auth_router, prefix = "/auth")     # Auth routes under "/auth" path
 
 # The event route is now available under /events/ and auth under /auth/
+

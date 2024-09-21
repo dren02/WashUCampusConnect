@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';  // Import axios for API requests
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
@@ -8,26 +8,32 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const navigate = useNavigate();
 
-  const navigate= useNavigate();
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     console.log('Login attempted with:', { username, password });
-    //  handle the login logic
-
-    // Example login logic (replace with your actual authentication logic later)
-    // ie make an API call here instead of this hard coded username and pw
-    if (username === 'admin' && password === 'password') {
-      // Successful login
-      navigate('/main'); // Navigate to MainPage
-    } else {
-      // Failed login
+  
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', password);
+  
+      const response = await axios.post('http://localhost:8000/auth/token/', formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+  
+      const { access_token } = response.data;
+      localStorage.setItem('token', access_token);
+      navigate('/main');
+    } catch (error) {
+      console.error('Login failed:', error);
       setError('Invalid username or password');
     }
   };
-  
-
   
 
   return (
@@ -54,6 +60,7 @@ const LoginPage = () => {
             required
           />
         </div>
+        {error && <p className="error-message">{error}</p>} {/* Display error message */}
         <button type="submit" className="login-button">Log In</button>
       </form>
     </div>

@@ -1,20 +1,40 @@
 import React, { useState } from 'react';
+import axios from 'axios';  // Import axios for API requests
 import '../styles/SignUpPage.css';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');  // You can store this for future use if you handle email later
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if passwords match
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
-    console.log('Sign up attempted with:', { username, email, password });
-    // Handle the sign up logic here
+
+    try {
+      // Make a POST request to the FastAPI sign-up endpoint
+      const response = await axios.post('http://localhost:8000/auth/signup/', {
+        username,
+        password,
+      });
+
+      // If the sign-up is successful, display a success message
+      setSuccess('Account created successfully!');
+      setError('');
+    } catch (error) {
+      // Handle error (e.g., username already exists)
+      console.error('Error during sign-up:', error);
+      setError('Failed to create account. Username might already exist.');
+      setSuccess('');
+    }
   };
 
   return (
@@ -61,6 +81,8 @@ const SignUp = () => {
             required
           />
         </div>
+        {error && <p className="error-message">{error}</p>} {/* Display error message */}
+        {success && <p className="success-message">{success}</p>} {/* Display success message */}
         <button type="submit" className="signup-button">Sign Up</button>
       </form>
     </div>

@@ -87,7 +87,6 @@ async def signup(user: User):
 @router.post("/token/")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = users_collection.find_one({"username": form_data.username})
-    
     if not user or not verify_password(form_data.password, user["password"]):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     

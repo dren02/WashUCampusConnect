@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';  // Import axios for API requests
 import '../styles/SignUpPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -9,6 +10,8 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,10 +28,10 @@ const SignUp = () => {
         username,
         password,
       });
-
-      // If the sign-up is successful, display a success message
+      // If the sign-up is successful
       setSuccess('Account created successfully!');
       setError('');
+      navigate('/main');
     } catch (error) {
       // Handle error (e.g., username already exists)
       console.error('Error during sign-up:', error);

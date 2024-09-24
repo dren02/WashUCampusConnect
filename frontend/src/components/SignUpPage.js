@@ -27,6 +27,7 @@ const SignUp = () => {
       const response = await axios.post('http://localhost:8000/auth/signup/', {
         username,
         password,
+        email,
       });
       // If the sign-up is successful
       setSuccess('Account created successfully!');

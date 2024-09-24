@@ -6,3 +6,4 @@ class Event(BaseModel):
     date: str
     time: str
     address: str
+    username: str

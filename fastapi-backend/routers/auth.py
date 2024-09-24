@@ -10,6 +10,7 @@ import string
 from datetime import datetime, timedelta
 from schema.schemas import list_serializer
 from bson import ObjectId
+from models.user import User
 
 
 # Password hashing context
@@ -23,10 +24,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # OAuth2PasswordBearer for token-based authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Define User model
-class User(BaseModel):
-    username: str
-    password: str
 
 router = APIRouter()
 
@@ -80,7 +77,8 @@ async def signup(user: User):
     
     # Hash the password and store the user in the users collection
     hashed_password = hash_password(user.password)
-    users_collection.insert_one({"username": user.username, "password": hashed_password})
+    email = user.email
+    users_collection.insert_one({"username": user.username, "password": hashed_password, "email": email})
     return {"message": "User created successfully"}
 
 # Login and Token generation

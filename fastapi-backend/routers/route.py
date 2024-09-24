@@ -10,7 +10,6 @@ router = APIRouter()
 @router.get("/")
 async def get_events():
     events = list_serializer(collection_name.find())
-    print(events)
     return events
 
 # Post request methods

@@ -22,3 +22,22 @@
     text-align: center;
   }
   
+  .link-box {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+  }
+
+  .profile-text {
+    margin-left: 8px; 
+    text-decoration: none;
+  }
+
+  .profile-text:hover {
+    text-decoration: underline;
+  }

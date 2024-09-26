@@ -9,7 +9,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import Fab from '@mui/material/Fab';
 import EditIcon from '@mui/icons-material/Edit';
-import EventCard from '../components/EventCard';
+import ProfileCard from '../components/ProfileCard';
 import axios from 'axios';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -78,7 +78,7 @@ function ProfilePage({ username }) {
               <EditIcon />
             </Fab>
             <Typography variant="h3">User</Typography>
-            <Typography variant="body1" sx={{ marginTop: 3 }}>Add Bio Here...</Typography>
+            <Typography variant="body1" sx={{ marginTop: 3 }}>Add Bio Here...(maybe)</Typography>
           </Item>
         </Grid>
         <Grid size={12}>
@@ -106,7 +106,7 @@ function ProfilePage({ username }) {
             {/* <div>
       {filteredEvents.length > 0 ? (
         filteredEvents.map((event) => (
-          <EventCard 
+          <ProfileCard 
             key={event.id} 
             event={event} 
           />
@@ -116,9 +116,8 @@ function ProfilePage({ username }) {
       )}
     </div> */}
             {events.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <ProfileCard key={event.id} event={event} />
             ))}
-            <Typography variant="body1">Test Event Card</Typography>
           </Item>
         </Grid>
       </Grid>

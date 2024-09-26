@@ -42,6 +42,7 @@ const MainPage = () => {
       </Box>
       <h1>Upcoming Events</h1>
       <div className="events-list">
+         {/* TODO later: add a 'organizations' field in database (can be used to filter/sort events)  */}
         {events.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}

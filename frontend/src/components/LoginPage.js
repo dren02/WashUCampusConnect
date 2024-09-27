@@ -26,8 +26,11 @@ const LoginPage = () => {
         },
       });
   
-      const { access_token } = response.data;
+      const { access_token, token_type, username: fetchedUsername } = response.data;
+      localStorage.setItem('username', fetchedUsername);
       localStorage.setItem('token', access_token);
+      console.log('Logged in successfully:', fetchedUsername);
+
       navigate('/main');
     } catch (error) {
       console.error('Login failed:', error);

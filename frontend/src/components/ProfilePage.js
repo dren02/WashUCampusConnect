@@ -17,10 +17,11 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function ProfilePage({ username }) {
+function ProfilePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const username = localStorage.getItem('username') || 'Guest';
   // Fetch events from API
   useEffect(() => {
     const fetchEvents = async () => {
@@ -61,7 +62,7 @@ function ProfilePage({ username }) {
               height: '100%',
             }}>
             <ProfileMenu letter="M" /> 
-            <Typography variant="h3">User</Typography>
+            <Typography variant="h3">{username}</Typography>
             <Typography variant="body1" sx={{ marginTop: 3 }}>About section...</Typography>
           </Item>
         </Grid>

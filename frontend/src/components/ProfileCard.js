@@ -43,7 +43,7 @@ const ProfileCard = ({ event }) => {
             </CardActionArea>
             <CardActions>
                 <Button size="small" color="primary">
-                    Share
+                    Save
                 </Button>
             </CardActions>
         </Card>

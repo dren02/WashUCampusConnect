@@ -7,8 +7,7 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import Fab from '@mui/material/Fab';
-import EditIcon from '@mui/icons-material/Edit';
+import ProfileMenu from '../components/ProfileMenu';
 import ProfileCard from '../components/ProfileCard';
 import axios from 'axios';
 
@@ -53,7 +52,7 @@ function ProfilePage({ username }) {
             }}> <Avatar src="/broken-image.jpg" sx={{ height: '200px', width: '200px' }} /> </Item>
         </Grid>
         <Grid size={8}>
-          <Item
+         <Item
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -61,24 +60,9 @@ function ProfilePage({ username }) {
               alignItems: 'flex-start',
               height: '100%',
             }}>
-            <Fab
-              color="default"
-              aria-label="edit"
-              sx={{
-                position: 'absolute',
-                top: 16,
-                right: 16,
-                backgroundColor: 'black',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: 'darkgrey',
-                },
-              }}
-            >
-              <EditIcon />
-            </Fab>
+            <ProfileMenu letter="M" /> 
             <Typography variant="h3">User</Typography>
-            <Typography variant="body1" sx={{ marginTop: 3 }}>Add Bio Here...(maybe)</Typography>
+            <Typography variant="body1" sx={{ marginTop: 3 }}>About section...</Typography>
           </Item>
         </Grid>
         <Grid size={12}>

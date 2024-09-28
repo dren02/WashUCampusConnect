@@ -19,11 +19,11 @@ const ProfileCard = ({ event }) => {
             <CardActionArea sx={{ display: 'flex', flexDirection: 'row' }}>
                 <CardMedia
                     component="img"
-                    sx={{ width: '150px', height: 'auto' }} // image will occupy 1/4 of the card
+                    sx={{ width: '100px', height: 'auto', marginLeft: '35px' }}
                     image={washuLogo}
                     alt="WashU Logo"
                 />
-                <CardContent sx={{ flex: 1, textAlign: 'left' }}>
+                <CardContent sx={{ flex: 1, textAlign: 'left', marginLeft: '30px' }}>
                     <Typography gutterBottom variant="h5" component="div">
                         {name}
                     </Typography>

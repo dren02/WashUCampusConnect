@@ -62,19 +62,6 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-  
-  button:hover {
-    background-color: #36a420;
-  }
-  
-  button[type="button"] {
-    background-color: #ccc;
-  }
-  
-  button[type="button"]:hover {
-    background-color: #bbb;
-  }
-  
 
 .modal-background {
     position: fixed;
@@ -168,11 +155,11 @@
   }
   
 
-  button[type="button"] {
+  .form-button {
     background-color: #ccc;
   }
   
-  button[type="button"]:hover {
+  .form-button:hover {
     background-color: #bbb;
   }
   

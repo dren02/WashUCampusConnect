@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Logout from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Tooltip from '@mui/material/Tooltip';
@@ -10,17 +11,28 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 
 const ProfileMenu = ({ letter }) => {
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => { // change this to send request to backend
+
+    const handleClose = () => { 
         setAnchorEl(null);
     };
+
+    const logout = () => {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        navigate('/login') 
+        // window.location.reload();  // alternately just reload the current page
+    };
+
     return (
         <React.Fragment>
-            <Box sx={{ display: 'flex', position: 'absolute', top: 16, right: 16, textAlign: 'center' }}>
+            <Box>
                 <Tooltip title="Account settings">
                     <IconButton
                         onClick={handleClick}
@@ -29,7 +41,7 @@ const ProfileMenu = ({ letter }) => {
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}>
-                        <Avatar sx={{ width: 40, height: 40, backgroundColor: 'darkred' }}>{letter}</Avatar>
+                        <Avatar sx={{ width: 40, height: 40, backgroundColor: '#BA0C2F' }}>{letter}</Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -72,7 +84,7 @@ const ProfileMenu = ({ letter }) => {
             >
                 <MenuItem onClick={handleClose}>
                     <ListItemIcon>
-                        <Avatar sx={{ backgroundColor: 'darkred' }}>M</Avatar>
+                        <Avatar sx={{ backgroundColor: '#BA0C2F' }}>{letter}</Avatar>
                     </ListItemIcon>
                     View Profile
                 </MenuItem>
@@ -82,7 +94,7 @@ const ProfileMenu = ({ letter }) => {
                     </ListItemIcon>
                     Edit About
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={logout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>

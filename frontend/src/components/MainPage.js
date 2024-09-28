@@ -19,7 +19,7 @@ const MainPage = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPostModalVisible, setIsPostModalVisible] = useState(false); // State for post modal
   const [selectedEvent, setSelectedEvent] = useState(null); // Store the selected event for editing
-
+  const username = localStorage.getItem('username') || 'Guest';
 
   const [filter, setFilter] = useState({
     username: '',
@@ -76,7 +76,6 @@ const MainPage = () => {
   return (
     <>
       <img src={washuBanner} alt="WashU Banner" className="banner-image" />
-      
       <div className="main-layout">
         {/* Sidebar with collapsible feature */}
         <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -85,7 +84,7 @@ const MainPage = () => {
               className="avatar-container" 
               style={{ justifyContent: isCollapsed ? 'center' : 'flex-start' }} // Inline style logic here
             >
-              <Avatar src="/broken-image.jpg" className="sidebar-avatar" />
+              <Avatar sx={{ backgroundColor: '#BA0C2F' }}>{username[0]} </Avatar> 
               {!isCollapsed && (
                 <Typography variant="body1" className="profile-text">
                   Profile

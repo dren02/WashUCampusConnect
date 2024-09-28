@@ -78,9 +78,8 @@ const MakePost = ({ event, closeModal }) => {
             ></textarea>
           </div>
           <div className="form-actions">
-            <button type="button" onClick={closeModal}>Cancel</button>
-            <button type="submit">Save Event</button>
-            
+            <button type="button" className="form-button" onClick={closeModal}>Cancel</button>
+            <button type="submit" className="form-button">Save Event</button>
           </div>
         </form>
       </div>

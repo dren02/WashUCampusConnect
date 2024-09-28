@@ -42,7 +42,7 @@ async def forget_password(
     port = 587  # For starttls
     sender_email = "campus.events.service@gmail.com"
     receiver_email = fpr.email
-    password = "password" # Your email password
+    password = "aluy xmdf cwbn qkye" # Your email password
     context = ssl.create_default_context()
 
     # Create the reset password token

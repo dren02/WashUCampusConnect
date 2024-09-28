@@ -1,26 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/makePost.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const MakePost = ({ event, closeModal }) => {
   const [name, setName] = useState(event ? event.name : '');
   const [date, setDate] = useState(event ? event.date : '');
   const [time, setTime] = useState(event ? event.time : '');
   const [address, setAddress] = useState(event ? event.address : '');
-  const [details, setDetails] = useState(event ? event.details_of_event : '');
-  const [username, setUsername] = useState(event ? event.username : '');
+  const [details_of_event, setDetails] = useState(event ? event.details_of_event : '');
+  const [username, setUsername] = useState('');
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate(); // Define navigate function
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the submit logic, possibly sending data to an API
-    console.log({
+
+    const eventData = {
       name,
       date,
       time,
       address,
-      details,
-      username
-    });
-    closeModal(); // Close the popup after submit
+      details_of_event,
+      username,
+    };
+
+    try {
+      await axios.post('http://localhost:8000/events', eventData);
+      console.log('Event created:', eventData);
+      closeModal();
+      navigate(0); // Reload the current page to reflect the newly created event
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
   };
 
   return (
@@ -72,14 +91,14 @@ const MakePost = ({ event, closeModal }) => {
             <label htmlFor="details">Event Details</label>
             <textarea
               id="details"
-              value={details}
+              value={details_of_event}
               onChange={(e) => setDetails(e.target.value)}
               required
             ></textarea>
           </div>
           <div className="form-actions">
-            <button type="button" className="form-button" onClick={closeModal}>Cancel</button>
-            <button type="submit" className="form-button">Save Event</button>
+            <button type="button" onClick={closeModal}>Cancel</button>
+            <button type="submit">Save Event</button>
           </div>
         </form>
       </div>

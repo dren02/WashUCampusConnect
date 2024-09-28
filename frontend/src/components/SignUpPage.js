@@ -32,7 +32,7 @@ const SignUp = () => {
       // If the sign-up is successful
       setSuccess('Account created successfully!');
       setError('');
-      navigate('/main');
+      navigate('/');
     } catch (error) {
       // Handle error (e.g., username already exists)
       console.error('Error during sign-up:', error);

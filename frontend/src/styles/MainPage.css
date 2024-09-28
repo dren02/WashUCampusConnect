@@ -1,43 +1,291 @@
 
+.main-layout{
+  display:flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #34495e; 
+  min-height: 100vh;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: width 0.3s ease; 
+}
+
+.sidebar.collapsed {
+  width: 60px; 
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  font-size: 1.1rem;
+}
+
+.sidebar-link:hover {
+  background-color: #2c3e50; 
+  padding-left: 10px;
+  transition: all 0.3s;
+}
+
+
+.toggle-button {
+  position: absolute;
+  top: 10px;
+  right: -15px;
+  background-color: #34495e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.toggle-button:hover {
+  transform: scale(1.1);
+}
+
+
+.top-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.filter-input:focus {
+  border-color: #42b72a; 
+}
+
+
 .main-page-container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #f9f9f9; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+  border-radius: 12px;
+}
+
+
+.main-page-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50; 
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f9f9f9; 
+}
+
+.content h1 {
+  color: #b82e1f; 
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+
+.events-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.profile-text:hover {
+  text-decoration: underline;
+}
+
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+
+
+.avatar-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.banner-image {
+  width: 100%;  
+  height: 80px;  
+  object-fit: cover; 
+  display: block;
+  
+}
+
+.filter-and-create-container {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between;
+  width: 100%; 
+  margin-bottom: 20px;
+}
+
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0.8; 
+  background-color: #b82e1f; 
+  color: white;
+  padding: 15px; 
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin-right: 10px; 
+}
+
+
+.filter-bar:hover {
+  background-color: #a52919; 
+}
+
+
+.filter-icon {
+  margin-right: 10px;
+}
+
+
+.filter-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+
+.create-post-button {
+  flex: 0.2; /* Take up 20% of the space */
+  padding: 15px; 
+  background-color: #42b72a; 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.create-post-button:hover {
+  background-color: #36a420;
+}
+
+
+
+.enter-button {
+  padding: 10px 20px;
+  background-color: #42b72a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.enter-button:hover {
+  background-color: #36a420;
+}
+
+
+.link-box {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #34495e; 
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  background-color: white;
+  padding: 8px 16px;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+  transition: all 0.3s ease;
+}
+
+.link-box:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+  transform: translateY(-2px); 
+}
+
+
+.MuiAvatar-root {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border: 2px solid #42b72a; 
+}
+
+
+.profile-text {
+  text-decoration: none;
+  color: #ffffff; 
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.profile-text:hover {
+  text-decoration: underline;
+}
+
+
+@media (max-width: 768px) {
+  .main-page-container {
     padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
   }
-  
+
   .main-page-container h1 {
-    text-align: center;
-    margin-bottom: 30px;
+    font-size: 2rem;
   }
-  
+
   .events-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+    gap: 15px;
   }
-  
-  .error {
-    color: red;
-    text-align: center;
-  }
-  
+
   .link-box {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: black;
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    cursor: pointer;
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+  }
+
+  .MuiAvatar-root {
+    width: 32px;
+    height: 32px;
   }
 
   .profile-text {
-    margin-left: 10px !important;
-    text-decoration: none;
+    font-size: 0.9rem;
   }
+  .create-post-button {
+    right: 10px;
+    top: 10px;
+    font-size: 1rem; 
+  }
+}
 
-  .profile-text:hover {
-    text-decoration: underline;
-  }
+ 
+

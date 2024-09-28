@@ -43,7 +43,7 @@ const ResetPassword = () => {
   return (
     <div className="reset-password-container">
       <h1>Reset Password</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="reset-password-form">
         <div className="form-group">
           <label htmlFor="newPassword">New Password:</label>
           <input

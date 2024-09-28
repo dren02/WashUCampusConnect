@@ -9,7 +9,7 @@
   }
   
   .signup-container h1 {
-    color: #1877f2;
+    color: #c82333;
     margin-bottom: 20px;
   }
   
@@ -57,7 +57,7 @@
     background-color: #36a420;
   }
   
-  /* Add some responsiveness */
+
   @media (max-width: 480px) {
     .signup-form {
       width: 90%;

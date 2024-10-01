@@ -96,7 +96,7 @@
 }
 
 .content h1 {
-  color: #b82e1f; 
+  color: #BA0C2F; 
   font-size: 2.5rem;
   margin-bottom: 20px;
   text-align: center;
@@ -150,7 +150,7 @@
   align-items: center;
   justify-content: center;
   flex: 0.8; 
-  background-color: #b82e1f; 
+  background-color: #BA0C2F; 
   color: white;
   padding: 15px; 
   cursor: pointer;
@@ -232,6 +232,9 @@
   transform: translateY(-2px); 
 }
 
+.avatar-link {
+  text-decoration: none;
+}
 
 .MuiAvatar-root {
   width: 40px;

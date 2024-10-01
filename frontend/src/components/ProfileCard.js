@@ -28,16 +28,19 @@ const ProfileCard = ({ event }) => {
                         {name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                        {username}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.primary', mb: 1 }}>
                         <CalendarMonthIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {date}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: 'text.primary', mb: 1 }}>
                         <AccessTimeIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {time}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                        {details_of_event}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant="body2" sx={{ color: 'text.primary', mb: 1.5 }}>
                         <PlaceIcon sx={{ marginRight: 1 }} fontSize="small" /> {address}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                        {details_of_event}
                     </Typography>
                 </CardContent>
             </CardActionArea>

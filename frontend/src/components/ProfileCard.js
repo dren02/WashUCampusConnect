@@ -10,9 +10,23 @@ import CardActions from '@mui/material/CardActions';
 import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import axios from 'axios';
 
 const ProfileCard = ({ event }) => {
     const { id, name, date, time, address, details_of_event, username } = event;
+    const currUser = localStorage.getItem('username')
+
+    const handleSave = async () => {
+        try {
+            const response = await axios.put(`http://localhost:8000/auth/${currUser}/save-event/`, {
+                eventId: id
+            });
+            alert(response.data.message);
+        } catch (error) {
+            console.error("Error saving event:", error);
+            alert("An error occurred while saving the event.");
+        }
+    };
 
     return (
         <Card sx={{ display: 'flex', maxWidth: 900, margin: 1 }}>
@@ -45,7 +59,7 @@ const ProfileCard = ({ event }) => {
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary">
+                <Button size="small" color="primary" onClick={handleSave}>
                     Save
                 </Button>
             </CardActions>

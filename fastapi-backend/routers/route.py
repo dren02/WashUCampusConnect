@@ -8,8 +8,14 @@ router = APIRouter()
 
 # Get request methods
 @router.get("/")
-async def get_events():
-    events = list_serializer(collection_name.find())
+async def get_events(ids: str = None):
+    if ids:
+        # Split the incoming string into a list of IDs
+        event_ids = ids.split(",")  
+        object_ids = [ObjectId(id) for id in event_ids]
+        events = list_serializer(collection_name.find({"_id": {"$in": object_ids}})) # Fetch events based on ObjectIds
+    else:
+        events = list_serializer(collection_name.find())  # Fetch all events if no IDs are provided
     return events
 
 # Post request methods

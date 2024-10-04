@@ -12,7 +12,6 @@ from schema.schemas import list_serializer
 from bson import ObjectId
 from models.user import User
 
-
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -23,7 +22,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # OAuth2PasswordBearer for token-based authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 
 router = APIRouter()
 
@@ -46,7 +44,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
+class SaveEventRequest(BaseModel):
+    eventId: str 
 
 @router.delete("/{id}")
 async def delete_user(id: str):
@@ -54,7 +53,6 @@ async def delete_user(id: str):
     if result is None:
         raise HTTPException(status_code=404, detail="User not found")
     return {"detail": "User deleted successfully"}
-
 
 
 @router.get("/")
@@ -65,7 +63,6 @@ async def get_users():
     if not serialized_users:
         return {"message": "No users found"}
     return serialized_users
-
 
 
 # Signup
@@ -105,5 +102,17 @@ async def protected_route(token: str = Depends(oauth2_scheme)):
     
     return {"message": f"Hello {username}, you have access to this protected route."}
 
+@router.put("/{username}/save-event/")
+async def save_event(username: str, save_event_request: SaveEventRequest):
+    print(f"Received request from user: {username}, eventId: {save_event_request.eventId}")
+    # Update the user's savedEvents field by adding the eventId
+    result = users_collection.find_one_and_update(
+        {"username": username},  # Match the user by username
+        {"$addToSet": {"savedEvents": save_event_request.eventId}},  # Avoid duplicates
+        return_document=True  # Return the updated document
+    )
+    if result is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "Event saved successfully", "savedEvents": result['savedEvents']}
 
 

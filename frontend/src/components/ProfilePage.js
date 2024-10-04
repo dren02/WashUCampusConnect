@@ -19,30 +19,42 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function ProfilePage() {
-  const [events, setEvents] = useState([]);
+  const [myPosts, setMyPosts] = useState([]); 
+  const [savedPosts, setSavedPosts] = useState([]);
+  const [savedEventIds, setSavedEventIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTab, setSelectedTab] = useState('myposts');
   const username = localStorage.getItem('username') || 'Guest';
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchEvents = async (tab) => {
+      setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8000/events');
-        setEvents(response.data);
-        console.log(response.data)
+        if (tab === 'myposts') {
+          const response = await axios.get('http://localhost:8000/events');
+          setMyPosts(response.data);
+        } else if (tab === 'savedposts') {
+          const response = await axios.get('http://localhost:8000/auth');
+          const userSavedPosts = response.data.find(user => user.username === username);
+          if (userSavedPosts) {
+            setSavedEventIds(userSavedPosts.savedEvents);
+          } else {
+            setSavedEventIds([]);
+          }
+        }
       } catch (err) {
         setError('Failed to fetch events.');
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
-  }, []);
+    fetchEvents(selectedTab);
+  }, [selectedTab]);
 
-  const filteredEvents = selectedTab === 'myposts'
-  ? events.filter(event => event.username === username) // My posts
-  : events.filter(event => event.saved); // Saved posts 
+  const postsToDisplay = selectedTab === 'myposts'
+    ? myPosts.filter(event => event.username === username) // My Posts
+    : savedPosts; // Saved Posts
 
   const handleTabChange = (event, newTab) => {
     if (newTab !== null) {
@@ -50,9 +62,25 @@ function ProfilePage() {
     }
   };
 
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      if (savedEventIds.length > 0) {
+        try {
+          const ids = savedEventIds.join(',');
+          const response = await axios.get(`http://localhost:8000/events/?ids=${ids}`);
+          setSavedPosts(response.data);
+        } catch (err) {
+          console.error('Failed to fetch saved events:', err);
+        }
+      }
+    };
+    fetchEventDetails();
+  }, [savedEventIds]);
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-          <Navbar/>
+      <Navbar />
       <Grid container spacing={2} justifyContent="center" style={{ height: '100%' }}>
         <Grid size={4}>
           <Box
@@ -62,20 +90,20 @@ function ProfilePage() {
               alignItems: 'center',
               height: '100%',
               border: 'none',
-              padding: '16px', 
-            }}> 
-            <Avatar sx={{ height: '200px', width: '200px', fontSize: '80px', backgroundColor: '#BA0C2F' }}>{username[0]} </Avatar> 
+              padding: '16px',
+            }}>
+            <Avatar sx={{ height: '200px', width: '200px', fontSize: '80px', backgroundColor: '#BA0C2F' }}>{username[0]} </Avatar>
           </Box>
         </Grid>
         <Grid size={8}>
-         <Box
+          <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'flex-start',
               height: '100%',
-              padding: '16px', 
+              padding: '16px',
             }}>
             {/* <ProfileMenu letter={username[0]} />  */}
             <Typography variant="h3">{username}</Typography>
@@ -84,6 +112,8 @@ function ProfilePage() {
         </Grid>
         <Grid size={12}>
           <Item>
+            {loading && <p>Loading events...</p>}
+            {error && <p>{error}</p>}
             <ToggleButtonGroup
               color="primary"
               value={selectedTab}
@@ -91,7 +121,7 @@ function ProfilePage() {
               onChange={handleTabChange}
               aria-label="Platform">
               <ToggleButton value="myposts">My Posts</ToggleButton>
-              <ToggleButton value="savedposts">Saved Posts</ToggleButton>
+              <ToggleButton value="savedposts">Saved</ToggleButton>
             </ToggleButtonGroup>
           </Item>
         </Grid>
@@ -104,17 +134,17 @@ function ProfilePage() {
             border: 'none',
           }}>
             <div>
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event) => (
-                <ProfileCard 
-                  key={event.id} 
-                  event={event} 
-                />
-              ))
-            ) : (
-              <div>No posts available</div>
-            )}
-          </div>
+              {postsToDisplay.length > 0 ? (
+                postsToDisplay.map((event) => (
+                  <ProfileCard
+                    key={event.id}
+                    event={event}
+                  />
+                ))
+              ) : (
+                <div>No posts available</div>
+              )}
+            </div>
           </Box>
         </Grid>
       </Grid>

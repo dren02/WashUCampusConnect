@@ -20,7 +20,7 @@ function ResponsiveAppBar() {
   const username = localStorage.getItem('username') || 'Guest';
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', color: '#BA0C2F' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'white', color: '#BA0C2F', borderBottom: '1px solid #D3D3D3' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />

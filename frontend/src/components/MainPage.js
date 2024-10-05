@@ -6,8 +6,8 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import washuBanner from '../assets/washubanner.png';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import Navbar from '../components/Navbar'
 
 
 const MainPage = () => {
@@ -75,7 +75,7 @@ const MainPage = () => {
 
   return (
     <>
-      <img src={washuBanner} alt="WashU Banner" className="banner-image" />
+      <Navbar/>
       <div className="main-layout">
         {/* Sidebar with collapsible feature */}
         <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>

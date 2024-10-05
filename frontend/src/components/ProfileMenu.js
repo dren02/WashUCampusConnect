@@ -6,9 +6,10 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const ProfileMenu = ({ letter }) => {
     const navigate = useNavigate();
@@ -21,6 +22,22 @@ const ProfileMenu = ({ letter }) => {
 
     const handleClose = () => { 
         setAnchorEl(null);
+    };
+
+    const handleViewProfile = () => {
+        navigate('/profile');
+    }
+
+    const handleChangePassword = () => {
+        // change password logic here
+    }
+
+    const handleDelete = async () => {
+        const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+        if (confirmDelete) {
+           console.log("perform delete account acction")
+           // insert axios delete logic
+        }
     };
 
     const logout = () => {
@@ -82,17 +99,23 @@ const ProfileMenu = ({ letter }) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleViewProfile}>
                     <ListItemIcon>
                         <Avatar sx={{ backgroundColor: '#BA0C2F' }}>{letter}</Avatar>
                     </ListItemIcon>
                     View Profile
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleChangePassword}>
                     <ListItemIcon>
-                        <EditIcon fontSize="small" />
+                        <SettingsIcon fontSize="small" />
                     </ListItemIcon>
-                    Edit About
+                    Change Password
+                </MenuItem>
+                <MenuItem onClick={handleDelete} sx={{ color: 'red' }}>
+                    <ListItemIcon>
+                        <DeleteForeverIcon fontSize="small" />
+                    </ListItemIcon>
+                    Delete Account
                 </MenuItem>
                 <MenuItem onClick={logout}>
                     <ListItemIcon>

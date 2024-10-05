@@ -89,6 +89,7 @@ const SignUp = () => {
         {success && <p className="success-message">{success}</p>} {/* Display success message */}
         <button type="submit" className="signup-button">Sign Up</button>
       </form>
+      <p>Already have an account? <a href="/login">Log In</a></p>
     </div>
   );
 };

@@ -7,10 +7,12 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import ProfileMenu from '../components/ProfileMenu';
 import ProfileCard from '../components/ProfileCard';
 import Navbar from '../components/Navbar'
 import axios from 'axios';
+import MenuItem from '@mui/material/MenuItem';
+import EditIcon from '@mui/icons-material/Edit';
+import EditAbout from './EditAbout';
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -19,38 +21,54 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function ProfilePage() {
-  const [myPosts, setMyPosts] = useState([]); 
+  const [myPosts, setMyPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
   const [savedEventIds, setSavedEventIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTab, setSelectedTab] = useState('myposts');
   const username = localStorage.getItem('username') || 'Guest';
+  const [aboutMe, setAboutMe] = useState('');
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchEvents = async (tab) => {
-      setLoading(true);
-      try {
-        if (tab === 'myposts') {
-          const response = await axios.get('http://localhost:8000/events');
-          setMyPosts(response.data);
-        } else if (tab === 'savedposts') {
-          const response = await axios.get('http://localhost:8000/auth');
-          const userSavedPosts = response.data.find(user => user.username === username);
-          if (userSavedPosts) {
-            setSavedEventIds(userSavedPosts.savedEvents);
-          } else {
-            setSavedEventIds([]);
-          }
+  const fetchEvents = async (tab) => {
+    setLoading(true);
+    try {
+      if (tab === 'myposts') {
+        const response = await axios.get('http://localhost:8000/events');
+        setMyPosts(response.data);
+      } else if (tab === 'savedposts') {
+        const response = await axios.get('http://localhost:8000/auth');
+        const userSavedPosts = response.data.find(user => user.username === username);
+        if (userSavedPosts) {
+          setSavedEventIds(userSavedPosts.savedEvents);
+        } else {
+          setSavedEventIds([]);
         }
-      } catch (err) {
-        setError('Failed to fetch events.');
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      setError('Failed to fetch events.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  // trigger fetchEvents(tab) on tab change
+  useEffect(() => {
     fetchEvents(selectedTab);
   }, [selectedTab]);
+
+  useEffect(() => {
+    const fetchAboutMe = async () => {
+      try {
+        // TODO: fetch logged-in user's bio/about section from api: 
+        const response = await axios.get();
+        setAboutMe();
+      } catch (err) {
+        setAboutMe("About me unavailable");
+      }
+    };
+    fetchAboutMe();
+  }, []);
 
   const postsToDisplay = selectedTab === 'myposts'
     ? myPosts.filter(event => event.username === username) // My Posts
@@ -77,6 +95,18 @@ function ProfilePage() {
     fetchEventDetails();
   }, [savedEventIds]);
 
+  const handleDeleteEvent = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/events/${id}`);
+      fetchEvents(selectedTab);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  }
+
+  const handleEditAbout = () => {
+    setIsEditModalVisible(!isEditModalVisible);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -107,7 +137,19 @@ function ProfilePage() {
             }}>
             {/* <ProfileMenu letter={username[0]} />  */}
             <Typography variant="h3">{username}</Typography>
-            <Typography variant="body1" sx={{ marginTop: 3 }}>About section here</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
+              <Typography variant="body1" sx={{ marginTop: 3 }}>About section here</Typography>
+              {/* <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> */}
+              <MenuItem onClick={handleEditAbout}>
+                <EditIcon fontSize="small" />
+              </MenuItem>
+            </Box>
+            {isEditModalVisible && (
+              <EditAbout
+                closeModal={handleEditAbout}
+                about={aboutMe}
+              />
+            )}
           </Box>
         </Grid>
         <Grid size={12}>
@@ -120,12 +162,12 @@ function ProfilePage() {
               exclusive
               onChange={handleTabChange}
               aria-label="Platform">
-              <ToggleButton value="myposts">My Posts</ToggleButton>
-              <ToggleButton value="savedposts">Saved</ToggleButton>
+              <ToggleButton value="myposts" >My Posts</ToggleButton>
+              <ToggleButton value="savedposts">&nbsp;&nbsp;Saved&nbsp;&nbsp;</ToggleButton>
             </ToggleButtonGroup>
           </Item>
         </Grid>
-        <Grid size={8}>
+        <Grid size={8} >
           <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -139,6 +181,7 @@ function ProfilePage() {
                   <ProfileCard
                     key={event.id}
                     event={event}
+                    onDelete={handleDeleteEvent}
                   />
                 ))
               ) : (

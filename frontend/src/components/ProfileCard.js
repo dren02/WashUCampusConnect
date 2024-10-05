@@ -10,11 +10,40 @@ import CardActions from '@mui/material/CardActions';
 import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 import axios from 'axios';
 
-const ProfileCard = ({ event }) => {
+const ITEM_HEIGHT = 45;
+
+const options = [
+    'Edit',
+    'Delete'
+];
+
+const ProfileCard = ({ event, onDelete }) => {
     const { id, name, date, time, address, details_of_event, username } = event;
     const currUser = localStorage.getItem('username')
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleDropdown = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleDeleteOption = async () => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this item? This action cannot be undone.");
+        if (confirmDelete) {
+            onDelete(id);
+        }
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const handleSave = async () => {
         try {
@@ -58,10 +87,48 @@ const ProfileCard = ({ event }) => {
                     </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions>
+            <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <Button size="small" color="primary" onClick={handleSave}>
                     Save
                 </Button>
+                {currUser === username && (
+                    <IconButton
+                        aria-label="more"
+                        id="long-button"
+                        aria-controls={open ? 'long-menu' : undefined}
+                        aria-expanded={open ? 'true' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleDropdown}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                )}
+                <Menu
+                    id="long-menu"
+                    MenuListProps={{
+                        'aria-labelledby': 'long-button',
+                    }}
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    slotProps={{
+                        paper: {
+                            style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: '15ch',
+                            },
+                        },
+                    }}
+                >
+                    {options.map((option) => (
+                        <MenuItem key={option} onClick={() => {
+                            handleClose();
+                            if (option === 'Delete') handleDeleteOption();
+                        }}>
+                            {option}
+                        </MenuItem>
+                    ))}
+                </Menu>
             </CardActions>
         </Card>
     );

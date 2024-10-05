@@ -67,7 +67,8 @@ const LoginPage = () => {
       </form>
       <div className="forget-password-link">
         <p>
-          <a href="/forget-password">Forget Password?</a>
+          <a href="/forget-password">Forgot Password?</a>
+          <p>Don't have an account? <a href="/signup">Sign Up</a></p>
         </p>
       </div>
     </div>

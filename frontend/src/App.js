@@ -7,6 +7,7 @@ import MainPage from './components/MainPage';
 import ProfilePage from './components/ProfilePage';
 import ForgetPassword from './components/ForgetPassword';
 import ResetPassword from './components/ResetPassword';
+import EventDetails from './components/EventDetails';
 import './styles/App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/event/:id" element={<EventDetails />} /> 
       </Routes>
     </Router>
   );

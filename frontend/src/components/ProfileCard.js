@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 const ITEM_HEIGHT = 45;
 
@@ -55,6 +56,10 @@ const ProfileCard = ({ event, onDelete }) => {
             console.error("Error saving event:", error);
             alert("An error occurred while saving the event.");
         }
+    };
+
+    const handleEdit = () => {
+        navigate(`/edit-event/${id}`); // Navigate to edit event page
     };
 
     return (

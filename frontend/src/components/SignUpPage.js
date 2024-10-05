@@ -24,7 +24,7 @@ const SignUp = () => {
 
     try {
       // Make a POST request to the FastAPI sign-up endpoint
-      const response = await axios.post('http://localhost:8000/auth/signup/', {
+      await axios.post('http://localhost:8000/auth/signup/', {
         username,
         password,
         email,

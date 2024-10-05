@@ -30,6 +30,7 @@ const ProfileCard = ({ event, onDelete }) => {
     const currUser = localStorage.getItem('username')
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
 
     const handleDropdown = (event) => {
         setAnchorEl(event.currentTarget);
@@ -93,7 +94,7 @@ const ProfileCard = ({ event, onDelete }) => {
                 </CardContent>
             </CardActionArea>
             <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <Button size="small" color="primary" onClick={handleSave}>
+                <Button size="small" color="primary" onClick={handleSave}  sx={{ marginBottom: 6, marginTop: 8 }}>
                     Save
                 </Button>
                 {currUser === username && (
@@ -129,6 +130,7 @@ const ProfileCard = ({ event, onDelete }) => {
                         <MenuItem key={option} onClick={() => {
                             handleClose();
                             if (option === 'Delete') handleDeleteOption();
+                            if (option === 'Edit') handleEdit();
                         }}>
                             {option}
                         </MenuItem>

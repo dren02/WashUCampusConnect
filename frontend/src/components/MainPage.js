@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import EventCard from '../components/EventCard';
 import MakePost from '../components/makePost';
 import '../styles/MainPage.css';
-import Avatar from '@mui/material/Avatar';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Navbar from '../components/Navbar';
 import { Box, Grid, Typography, Button } from '@mui/material';
 import SortAscendingIcon from '@mui/icons-material/ArrowUpward'; 
 import SortDescendingIcon from '@mui/icons-material/ArrowDownward'; 
+import washuBanner from '../assets/washubanner.png';
 
 
 const MainPage = () => {
@@ -27,8 +26,6 @@ const MainPage = () => {
     date: '',
     time: ''
   });
-
- 
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -67,7 +64,6 @@ const MainPage = () => {
     // Add the logic to apply the filter and fetch filtered events
     console.log('Filters applied:', filter);
   };
-
 
   const toggleSort = () => {
     const sortedEvents = [...events].sort((a, b) => {

@@ -10,12 +10,13 @@
 }
 
 .home-container h1 {
-  color: #c82333; 
+  color: #BA0C2F;
   margin-bottom: 30px;
   font-size: 2.8rem;
   text-align: center;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
+
 .button-container {
   display: flex;
   flex-direction: column; 
@@ -27,22 +28,23 @@
   display: inline-block;
   padding: 20px 40px; 
   margin: 15px 0;     
-  background-color: #28a745; 
+  background-color: #BA0C2F; 
   color: white;
   text-decoration: none;
   border-radius: 25px;
   font-size: 1.5rem;
   font-weight: bold;
+  line-height: normal; 
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 2px solid transparent; 
 }
 
 .button:hover {
-  background-color: #218838; 
+  background-color: #a52919; 
   transform: translateY(-3px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  border: 2px solid #28a745; 
+  border: 2px solid #BA0C2F; 
 }
 
 .logo {
@@ -51,9 +53,7 @@
   display: block; 
   margin: 20px auto; 
   border-radius: 10px; 
-
 }
-
 
 @media (max-width: 768px) {
   .home-container {
@@ -73,9 +73,5 @@
       width: 80%;
       margin: 10px 0;
       text-align: center;
-  }
-
-  .events-container {
-      width: 90%;
   }
 }

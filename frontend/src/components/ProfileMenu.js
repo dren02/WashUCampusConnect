@@ -19,15 +19,19 @@ const ProfileMenu = ({ letter }) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => { 
+    const handleClose = () => {
         setAnchorEl(null);
     };
 
     const logout = () => {
         localStorage.removeItem('username');
         localStorage.removeItem('token');
-        navigate('/login') 
-        // window.location.reload();  // alternately just reload the current page
+        navigate('/login'); 
+    };
+
+    const viewProfile = () => {
+        handleClose(); 
+        navigate('/profile');
     };
 
     return (
@@ -40,7 +44,8 @@ const ProfileMenu = ({ letter }) => {
                         sx={{ ml: 2 }}
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}>
+                        aria-expanded={open ? 'true' : undefined}
+                    >
                         <Avatar sx={{ width: 40, height: 40, backgroundColor: '#BA0C2F' }}>{letter}</Avatar>
                     </IconButton>
                 </Tooltip>
@@ -82,7 +87,7 @@ const ProfileMenu = ({ letter }) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={viewProfile}> 
                     <ListItemIcon>
                         <Avatar sx={{ backgroundColor: '#BA0C2F' }}>{letter}</Avatar>
                     </ListItemIcon>
@@ -103,7 +108,6 @@ const ProfileMenu = ({ letter }) => {
             </Menu>
         </React.Fragment>
     );
-
 };
 
 export default ProfileMenu;

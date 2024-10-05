@@ -11,10 +11,12 @@ import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
-const ProfileCard = ({ event }) => {
+const ProfileCard = ({ event, onDelete }) => {
     const { id, name, date, time, address, details_of_event, username } = event;
-    const currUser = localStorage.getItem('username')
+    const currUser = localStorage.getItem('username');
+    const navigate = useNavigate();
 
     const handleSave = async () => {
         try {
@@ -26,6 +28,21 @@ const ProfileCard = ({ event }) => {
             console.error("Error saving event:", error);
             alert("An error occurred while saving the event.");
         }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await axios.delete(`http://localhost:8000/events/${id}`);
+            alert('Event deleted successfully');
+            onDelete(id);
+        } catch (error) {
+            console.error("Error deleting event:", error);
+            alert("An error occurred while deleting the event.");
+        }
+    };
+
+    const handleEdit = () => {
+        navigate(`/edit-event/${id}`); // Navigate to edit event page
     };
 
     return (
@@ -58,10 +75,22 @@ const ProfileCard = ({ event }) => {
                     </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions>
-                <Button size="small" color="primary" onClick={handleSave}>
+            <CardActions sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginLeft: 'auto', marginRight: '10px' }}>
+                <Button size="small" color="primary" onClick={handleSave} sx={{ marginBottom: 1 }}> {/* 10px space by using marginBottom */}
                     Save
                 </Button>
+                
+                {/* Show Edit and Delete buttons only if the current user is the creator of the event */}
+                {username === currUser && (
+                    <>
+                        <Button size="small" color="error" onClick={handleDelete} sx={{ marginBottom: 1 }}>
+                            Delete
+                        </Button>
+                        <Button size="small" color="secondary" onClick={handleEdit}>
+                            Edit
+                        </Button>
+                    </>
+                )}
             </CardActions>
         </Card>
     );

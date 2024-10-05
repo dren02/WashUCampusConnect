@@ -1,6 +1,7 @@
 
 .main-layout{
   display:flex;
+ 
 }
 
 .sidebar {
@@ -60,7 +61,7 @@
 .filter-input {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px; 
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s;
@@ -69,6 +70,7 @@
 .filter-input:focus {
   border-color: #42b72a; 
 }
+
 
 
 .main-page-container {
@@ -256,6 +258,24 @@
 }
 
 
+.banner-image {
+  width: 100%;          
+  height: auto;        
+  object-fit: cover;   
+  margin-top: auto;   
+  display: block;     
+}
+
+
+.banner-container {
+  display: flex; 
+  justify-content: center; 
+  align-items: center;    
+  background-color: #BA0C2F; 
+}
+
+
+
 @media (max-width: 768px) {
   .main-page-container {
     padding: 20px;
@@ -289,6 +309,9 @@
     font-size: 1rem; 
   }
 }
+
+
+
 
  
 

@@ -3,11 +3,14 @@ import EventCard from '../components/EventCard';
 import MakePost from '../components/makePost';
 import '../styles/MainPage.css';
 import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import washuBanner from '../assets/washubanner.png';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import Navbar from '../components/Navbar';
+import { Box, Grid, Typography, Button } from '@mui/material';
+import SortAscendingIcon from '@mui/icons-material/ArrowUpward'; 
+import SortDescendingIcon from '@mui/icons-material/ArrowDownward'; 
 
 
 const MainPage = () => {
@@ -15,11 +18,10 @@ const MainPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-   // Collapsible sidebar state
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isPostModalVisible, setIsPostModalVisible] = useState(false); // State for post modal
-  const [selectedEvent, setSelectedEvent] = useState(null); // Store the selected event for editing
+  const [isPostModalVisible, setIsPostModalVisible] = useState(false); 
+  const [selectedEvent, setSelectedEvent] = useState(null); 
   const username = localStorage.getItem('username') || 'Guest';
+  const [isAscending, setIsAscending] = useState(true);
 
   const [filter, setFilter] = useState({
     username: '',
@@ -47,9 +49,6 @@ const MainPage = () => {
     setFilter({ ...filter, [e.target.name]: e.target.value });
   };
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
 
   const toggleFilter =() => {
     setIsFilterVisible(!isFilterVisible);
@@ -57,12 +56,12 @@ const MainPage = () => {
 
   const togglePostModal = () => {
     setIsPostModalVisible(!isPostModalVisible);
-    setSelectedEvent(null); // Reset selected event if adding new post
+    setSelectedEvent(null); 
   };
 
   const editEvent = (event) => {
-    setSelectedEvent(event); // Set the selected event for editing
-    setIsPostModalVisible(true); // Open the modal
+    setSelectedEvent(event); 
+    setIsPostModalVisible(true); 
   };
 
   const applyFilter = () => {
@@ -70,104 +69,169 @@ const MainPage = () => {
     console.log('Filters applied:', filter);
   };
 
+
+  const toggleSort = () => {
+    const sortedEvents = [...events].sort((a, b) => {
+      if (isAscending) {
+        return new Date(a.date) - new Date(b.date);
+      } else {
+        return new Date(b.date) - new Date(a.date);
+      }
+    });
+    setEvents(sortedEvents);
+    setIsAscending(!isAscending); 
+  };
+
+
   if (loading) return <Typography variant="h6">Loading events...</Typography>;
   if (error) return <Typography variant="h6">{error}</Typography>;
 
   return (
     <>
-      <img src={washuBanner} alt="WashU Banner" className="banner-image" />
-      <div className="main-layout">
-        {/* Sidebar with collapsible feature */}
-        <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-          <Link to="/profile" className="avatar-link">
-            <div 
-              className="avatar-container" 
-              style={{ justifyContent: isCollapsed ? 'center' : 'flex-start' }} // Inline style logic here
-            >
-              <Avatar sx={{ backgroundColor: '#BA0C2F' }}>{username[0]} </Avatar> 
-              {!isCollapsed && (
-                <Typography variant="body1" className="profile-text">
-                  Profile
-                </Typography>
-              )}
-            </div>
-          </Link>
-          <button onClick={toggleSidebar} className="toggle-button">
-            {isCollapsed ? '→' : '←'}
-          </button>
-          {!isCollapsed && (
-            <>
-              <Link to="/settings" className="sidebar-link">Settings</Link>
-              <Link to="/help" className="sidebar-link">Help</Link>
-            </>
+      <Navbar />
+      <Box sx={{ flexGrow: 1, padding: 2, minHeight: '100vh', position: 'relative' }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" color="#BA0C2F" align="center" sx={{ marginBottom: 2, marginTop: 8 }}>
+              Upcoming Events
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 2,
+                padding: 2,
+                borderRadius: 2,
+                backgroundColor: '#f9f9f9', 
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', 
+              }}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: 5,
+                  backgroundColor: '#BA0C2F', 
+                  padding: '10px 20px',
+                  '&:hover': {
+                    backgroundColor: '#a52919', 
+                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                startIcon={<FilterAltIcon />}
+                onClick={toggleFilter}>
+                Filter Events
+              </Button>
+
+              {/* Sort Button */}
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: 5,
+                  backgroundColor: '#BA0C2F',
+                  padding: '10px 20px',
+                  '&:hover': {
+                    backgroundColor: '#a52919',
+                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={toggleSort}>
+                <SortAscendingIcon sx={{ marginRight: 0.5 }} />
+                Sort
+                <SortDescendingIcon sx={{ marginLeft: 0.5 }} />
+              </Button>
+
+              <Button
+                variant="contained"
+                color="success"
+                onClick={togglePostModal}
+                sx={{
+                  borderRadius: 5,
+                  padding: '10px 20px',
+                  backgroundColor: '#42b72a', 
+                  '&:hover': {
+                    backgroundColor: '#36a420', 
+                  },
+                }}>
+                Create Post
+              </Button>
+            </Box>
+          </Grid>
+
+          {isFilterVisible && (
+            <Grid item xs={12}>
+              <Box className="filter-section" sx={{ display: 'flex', gap: 2 }}>
+                <input
+                  type="text"
+                  placeholder="Search by username"
+                  name="username"
+                  value={filter.username}
+                  onChange={(e) => setFilter({ ...filter, username: e.target.value })}
+                  className="filter-input"
+                />
+                <input
+                  type="date"
+                  name="date"
+                  value={filter.date}
+                  onChange={(e) => setFilter({ ...filter, date: e.target.value })}
+                  className="filter-input"
+                />
+                <input
+                  type="time"
+                  name="time"
+                  value={filter.time}
+                  onChange={(e) => setFilter({ ...filter, time: e.target.value })}
+                  className="filter-input"
+                />
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={applyFilter}
+                  sx={{ borderRadius: 5, padding: '10px 20px' }}>
+                  Enter
+                </Button>
+              </Box>
+            </Grid>
           )}
-        </aside>
 
-        <div className="content">
-  <h1>Upcoming Events</h1>
+          <Grid item xs={12} sx={{ marginBottom: '20px' }}>
+            <Grid container spacing={2}>
+              {events.map((event) => (
+                <Grid item xs={12} sm={6} md={4} key={event.id}>
+                  <EventCard event={event} />
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
 
-  {/* Container for both the filter and the create post button */}
-  <div className="filter-and-create-container">
-    <div className="filter-bar" onClick={toggleFilter}>
-      <FilterAltIcon className="filter-icon" />
-      <span className="filter-text">Filter Events</span>
-    </div>
+          {isPostModalVisible && (
+            <MakePost event={selectedEvent} closeModal={togglePostModal} />
+          )}
+        </Grid>
+      </Box>
 
-    {/* Button to open the create post modal */}
-    <button className="create-post-button" onClick={togglePostModal}>
-      Create Post
-    </button>
-  </div>
-
-  {/* Filter Section - Show/Hide based on isFilterVisible */}
-  {isFilterVisible && (
-    <div className="filter-section">
-      <div className="top-bar">
-        <input
-          type="text"
-          placeholder="Search by username"
-          name="username"
-          value={filter.username}
-          onChange={handleFilterChange}
-          className="filter-input"
-        />
-        <input
-          type="date"
-          name="date"
-          value={filter.date}
-          onChange={handleFilterChange}
-          className="filter-input"
-        />
-        <input
-          type="time"
-          name="time"
-          value={filter.time}
-          onChange={handleFilterChange}
-          className="filter-input"
-        />
-        <button className="enter-button" onClick={applyFilter}>
-          Enter
-        </button>
-      </div>
-    </div>
-  )}
-
-  <div className="events-list">
-    {events.map((event) => (
-      <EventCard key={event.id} event={event} />
-    ))}
-  </div>
-
-  {/* Add the modal to create/edit posts */}
-  {isPostModalVisible && (
-    <MakePost
-      event={selectedEvent} // Pass the selected event if editing
-      closeModal={togglePostModal} // Pass function to close the modal
-    />
-  )}
-</div>
-</div>
-  </>
-);
+     
+      <img
+        src={washuBanner}
+        alt="WashU Banner"
+        className="banner-image"
+        style={{
+          padding: 0,
+          margin: 0,
+          width: '100%',
+          height: '80px', 
+          objectFit: 'cover',
+          boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.3)',
+        }}
+      />
+    </>
+  );
 };
+
 export default MainPage;

@@ -37,7 +37,7 @@ const ProfileCard = ({ event, onDelete }) => {
     };
 
     const handleDeleteOption = async () => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this item? This action cannot be undone.");
+        const confirmDelete = window.confirm("Are you sure you want to delete this event? This action cannot be undone.");
         if (confirmDelete) {
             onDelete(id);
         }

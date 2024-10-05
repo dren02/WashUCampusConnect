@@ -10,10 +10,18 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const ProfileMenu = ({ letter }) => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openDialog, setOpenDialog] = React.useState(false);
+    const [newPassword, setNewPassword] = React.useState('');
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
@@ -26,17 +34,30 @@ const ProfileMenu = ({ letter }) => {
 
     const handleViewProfile = () => {
         navigate('/profile');
-    }
+    };
 
     const handleChangePassword = () => {
-        // change password logic here
-    }
+        setOpenDialog(true); 
+        handleClose(); 
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false); 
+        setNewPassword(''); // Clear the password field on close
+    };
+
+    const handleSavePassword = () => {
+        // Implement change password logic here - eren
+
+        console.log("New Password:", newPassword);
+        handleCloseDialog(); 
+    };
 
     const handleDelete = async () => {
         const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
         if (confirmDelete) {
-           console.log("perform delete account acction")
-           // insert axios delete logic
+            console.log("perform delete account action");
+            // insert axios delete logic
         }
     };
 
@@ -124,6 +145,32 @@ const ProfileMenu = ({ letter }) => {
                     Logout
                 </MenuItem>
             </Menu>
+
+            {/* Change Password Dialog */}
+            <Dialog open={openDialog} onClose={handleCloseDialog} PaperProps={{sx: {width: '500px', maxWidth: '90%' }}}>
+                
+                <DialogTitle>Change Password</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="New Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSavePassword} color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </React.Fragment>
     );
 };

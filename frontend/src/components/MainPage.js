@@ -6,8 +6,8 @@ import axios from 'axios';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Navbar from '../components/Navbar';
 import { Box, Grid, Typography, Button } from '@mui/material';
-import SortAscendingIcon from '@mui/icons-material/ArrowUpward'; 
-import SortDescendingIcon from '@mui/icons-material/ArrowDownward'; 
+import SortAscendingIcon from '@mui/icons-material/ArrowUpward';
+import SortDescendingIcon from '@mui/icons-material/ArrowDownward';
 import washuBanner from '../assets/washubanner.png';
 
 
@@ -16,8 +16,8 @@ const MainPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [isPostModalVisible, setIsPostModalVisible] = useState(false); 
-  const [selectedEvent, setSelectedEvent] = useState(null); 
+  const [isPostModalVisible, setIsPostModalVisible] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const username = localStorage.getItem('username') || 'Guest';
   const [isAscending, setIsAscending] = useState(true);
 
@@ -27,17 +27,17 @@ const MainPage = () => {
     time: ''
   });
 
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/events');
+      setEvents(response.data);
+    } catch (err) {
+      setError('Failed to fetch events.');
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/events');
-        setEvents(response.data);
-      } catch (err) {
-        setError('Failed to fetch events.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchEvents();
   }, []);
 
@@ -45,20 +45,28 @@ const MainPage = () => {
     setFilter({ ...filter, [e.target.name]: e.target.value });
   };
 
-
-  const toggleFilter =() => {
+  const toggleFilter = () => {
     setIsFilterVisible(!isFilterVisible);
   }
 
   const togglePostModal = () => {
     setIsPostModalVisible(!isPostModalVisible);
-    setSelectedEvent(null); 
+    setSelectedEvent(null);
   };
 
   const editEvent = (event) => {
-    setSelectedEvent(event); 
-    setIsPostModalVisible(true); 
+    setSelectedEvent(event);
+    setIsPostModalVisible(true);
   };
+
+  const handleDeleteEvent = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/events/${id}`);
+      fetchEvents();
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  }
 
   const applyFilter = () => {
     // Add the logic to apply the filter and fetch filtered events
@@ -74,7 +82,7 @@ const MainPage = () => {
       }
     });
     setEvents(sortedEvents);
-    setIsAscending(!isAscending); 
+    setIsAscending(!isAscending);
   };
 
 
@@ -101,18 +109,18 @@ const MainPage = () => {
                 marginBottom: 2,
                 padding: 2,
                 borderRadius: 2,
-                backgroundColor: '#f9f9f9', 
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', 
+                backgroundColor: '#f9f9f9',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
               }}>
               <Button
                 variant="contained"
                 color="primary"
                 sx={{
                   borderRadius: 5,
-                  backgroundColor: '#BA0C2F', 
+                  backgroundColor: '#BA0C2F',
                   padding: '10px 20px',
                   '&:hover': {
-                    backgroundColor: '#a52919', 
+                    backgroundColor: '#a52919',
                   },
                   display: 'flex',
                   alignItems: 'center',
@@ -149,9 +157,9 @@ const MainPage = () => {
                 sx={{
                   borderRadius: 5,
                   padding: '10px 20px',
-                  backgroundColor: '#42b72a', 
+                  backgroundColor: '#42b72a',
                   '&:hover': {
-                    backgroundColor: '#36a420', 
+                    backgroundColor: '#36a420',
                   },
                 }}>
                 Create Post
@@ -199,7 +207,7 @@ const MainPage = () => {
             <Grid container spacing={2}>
               {events.map((event) => (
                 <Grid item xs={12} sm={6} md={4} key={event.id}>
-                  <EventCard event={event} />
+                  <EventCard event={event} onDelete={handleDeleteEvent} />
                 </Grid>
               ))}
             </Grid>
@@ -211,7 +219,6 @@ const MainPage = () => {
         </Grid>
       </Box>
 
-     
       <img
         src={washuBanner}
         alt="WashU Banner"
@@ -220,7 +227,7 @@ const MainPage = () => {
           padding: 0,
           margin: 0,
           width: '100%',
-          height: '80px', 
+          height: '80px',
           objectFit: 'cover',
           boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.3)',
         }}

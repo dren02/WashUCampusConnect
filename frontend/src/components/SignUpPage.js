@@ -30,13 +30,20 @@ const SignUp = () => {
         email,
       });
       // If the sign-up is successful
-      setSuccess('Account created successfully!');
+      setSuccess('Account created successfully! Redirecting to login page...');
       setError('');
-      navigate('/');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1800);
     } catch (error) {
       // Handle error (e.g., username already exists)
       console.error('Error during sign-up:', error);
-      setError('Failed to create account. Username might already exist.');
+      if (error.response && error.response.data && error.response.data.detail) {
+        setError(`Failed to create account: ${error.response.data.detail}`);
+      } else {
+        setError('Failed to create account: An unknown error occurred.');
+      }
+      //setError('Failed to create account. {print the error message here}');
       setSuccess('');
     }
   };

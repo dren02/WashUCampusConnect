@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -46,20 +47,51 @@ const ProfileMenu = ({ letter }) => {
         setNewPassword(''); // Clear the password field on close
     };
 
-    const handleSavePassword = () => {
-        // Implement change password logic here - eren
-
-        console.log("New Password:", newPassword);
-        handleCloseDialog(); 
+    
+    const handleSavePassword = async () => {
+        const username = localStorage.getItem('username'); // Retrieve the username from localStorage
+            try {
+            // Update user's about section in backend
+            await axios.put(`http://localhost:8000/auth/${username}/change-password/`, newPassword, {
+                headers: {
+                'Content-Type': 'text/plain', // Set content type to text/plain
+                },
+            });
+            console.log("New Password:", newPassword);
+            alert('Password changed successfully!'); // Show success message
+            handleCloseDialog(); 
+            // Optionally redirect or perform additional actions
+        } catch (error) {
+            console.error('Error changing password:', error);
+            if (error.response && error.response.data && error.response.data.detail) {
+                alert(`Failed to change password: ${error.response.data.detail}`);
+            } else {
+                alert('Failed to change password: An unknown error occurred.');
+            }
+        }
     };
-
     const handleDelete = async () => {
         const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
         if (confirmDelete) {
-            console.log("perform delete account action");
-            // insert axios delete logic
+            try {
+                const username = localStorage.getItem('username'); // Assuming you store the username in localStorage
+                await axios.delete(`http://localhost:8000/auth/${username}`);
+                console.log("Account deleted successfully");
+                // Redirect to the homepage or perform any other action
+                setTimeout(() => {
+                    navigate('/login');
+                  }, 1800);
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                if (error.response && error.response.data && error.response.data.detail) {
+                    alert(`Failed to delete account: ${error.response.data.detail}`);
+                } else {
+                    alert('Failed to delete account: An unknown error occurred.');
+                }
+            }
         }
     };
+    
 
     const logout = () => {
         localStorage.removeItem('username');

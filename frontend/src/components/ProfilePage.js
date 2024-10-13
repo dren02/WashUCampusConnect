@@ -60,15 +60,15 @@ function ProfilePage() {
   useEffect(() => {
     const fetchAboutMe = async () => {
       try {
-        // TODO: fetch logged-in user's bio/about section from api: 
-        const response = await axios.get();
-        setAboutMe();
+        const response = await axios.get(`http://localhost:8000/auth/${username}/about`);
+        setAboutMe(response.data.about);
       } catch (err) {
         setAboutMe("About me unavailable");
       }
     };
     fetchAboutMe();
-  }, []);
+  }, [username]);
+  
 
   const postsToDisplay = selectedTab === 'myposts'
     ? myPosts.filter(event => event.username === username) // My Posts
@@ -138,12 +138,12 @@ function ProfilePage() {
             {/* <ProfileMenu letter={username[0]} />  */}
             <Typography variant="h3">{username}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
-              <Typography variant="body1" sx={{ marginTop: 3 }}>About section here</Typography>
-              {/* <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> */}
+              <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> {/* Display the aboutMe state */}
               <MenuItem onClick={handleEditAbout}>
                 <EditIcon fontSize="small" />
               </MenuItem>
             </Box>
+
             {isEditModalVisible && (
               <EditAbout
                 closeModal={handleEditAbout}

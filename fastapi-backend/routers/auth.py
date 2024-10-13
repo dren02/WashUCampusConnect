@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from jose import jwt, JWTError
@@ -47,9 +47,9 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 class SaveEventRequest(BaseModel):
     eventId: str 
 
-@router.delete("/{id}")
-async def delete_user(id: str):
-    result = users_collection.find_one_and_delete({"_id": ObjectId(id)})
+@router.delete("/{username}")
+async def delete_user(username: str):
+    result = users_collection.find_one_and_delete({"username": username})
     if result is None:
         raise HTTPException(status_code=404, detail="User not found")
     return {"detail": "User deleted successfully"}
@@ -71,7 +71,8 @@ async def signup(user: User):
     # Check if the username already exists in the users collection
     if users_collection.find_one({"username": user.username}):
         raise HTTPException(status_code=400, detail="Username already exists")
-    
+    if users_collection.find_one({"email": user.email}):
+        raise HTTPException(status_code=400, detail="Email already exists")
     # Hash the password and store the user in the users collection
     hashed_password = hash_password(user.password)
     email = user.email
@@ -114,5 +115,36 @@ async def save_event(username: str, save_event_request: SaveEventRequest):
     if result is None:
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "Event saved successfully", "savedEvents": result['savedEvents']}
+
+
+@router.put("/{username}/update-about/")
+async def update_about(username: str, about: str = Body(..., media_type="text/plain")):
+    result = users_collection.find_one_and_update(
+        {"username": username},
+        {"$set": {"about": about}},
+        return_document=True
+    )
+    if result is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "About section updated", "about": result['about']}
+
+
+@router.get("/{username}/about")
+async def get_about(username: str):
+    user = users_collection.find_one({"username": username})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"about": user.get("about", "")}
+
+@router.put("/{username}/change-password")
+async def change_password(username: str, new_password: str = Body(..., media_type="text/plain")):
+    hashed_password = hash_password(new_password)
+    result = users_collection.find_one_and_update(
+        {"username": username},
+        {"$set": {"password": hashed_password}} 
+    )
+    if result is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"detail": "Password changed successfully"}
 
 

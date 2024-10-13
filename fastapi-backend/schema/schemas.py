@@ -18,7 +18,8 @@ def user_serializer(user) -> dict:
         "username": user["username"],
         "password": user["password"],
         "email": user["email"],
-        "savedEvents": user.get('savedEvents', []) 
+        "savedEvents": user.get('savedEvents', []),
+        "about": user.get('about', "About section is empty")
     }
 
 # General list serializer that checks the document type

@@ -4,21 +4,23 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 
 const EditAbout = ({ about, closeModal }) => {
-//   const [updateAbout, setUpdateAbout] = useState(about ? about.about : '');
-  const [updateAbout, setUpdateAbout] = useState('');
-  const username = localStorage.getItem('username')
+  const [updateAbout, setUpdateAbout] = useState(about ? about : '');
+  const username = localStorage.getItem('username');
   const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const aboutData = {
-      updateAbout
-    };
-
+    
+    // Directly send the string instead of wrapping it in an object
+    const aboutData = updateAbout; // Just the string
+    
     try {
-      // update user's about section in backend - eren
-      await axios.post('http://localhost:8000/', aboutData);
+      // Update user's about section in backend
+      await axios.put(`http://localhost:8000/auth/${username}/update-about/`, aboutData, {
+        headers: {
+          'Content-Type': 'text/plain', // Set content type to text/plain
+        },
+      });
       console.log('About section updated:', aboutData);
       closeModal();
       navigate(0); 
@@ -26,6 +28,8 @@ const EditAbout = ({ about, closeModal }) => {
       console.error('Error updating about section:', error);
     }
   };
+  
+  
 
   return (
     <div className="modal-background">

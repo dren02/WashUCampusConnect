@@ -7,6 +7,7 @@ class User(BaseModel):
     password: str
     email: str
     savedEvents: List[str] = []
+    about: str = "About section is empty"
 
 
 

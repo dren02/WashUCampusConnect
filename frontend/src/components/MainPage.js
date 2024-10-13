@@ -10,9 +10,9 @@ import SortAscendingIcon from '@mui/icons-material/ArrowUpward';
 import SortDescendingIcon from '@mui/icons-material/ArrowDownward';
 import washuBanner from '../assets/washubanner.png';
 
-
 const MainPage = () => {
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isFilterVisible, setIsFilterVisible] = useState(false);
@@ -31,12 +31,14 @@ const MainPage = () => {
     try {
       const response = await axios.get('http://localhost:8000/events');
       setEvents(response.data);
+      setFilteredEvents(response.data); // Set filteredEvents to the fetched events initially
     } catch (err) {
       setError('Failed to fetch events.');
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -47,7 +49,7 @@ const MainPage = () => {
 
   const toggleFilter = () => {
     setIsFilterVisible(!isFilterVisible);
-  }
+  };
 
   const togglePostModal = () => {
     setIsPostModalVisible(!isPostModalVisible);
@@ -66,25 +68,46 @@ const MainPage = () => {
     } catch (error) {
       console.error("Error deleting event:", error);
     }
-  }
+  };
 
   const applyFilter = () => {
-    // Add the logic to apply the filter and fetch filtered events
-    console.log('Filters applied:', filter);
+    let filtered = events;
+
+    // Filter by username
+    if (filter.username) {
+      filtered = filtered.filter(event => 
+        event.username.toLowerCase().includes(filter.username.toLowerCase())
+      );
+    }
+
+    // Filter by date
+    if (filter.date) {
+      filtered = filtered.filter(event => 
+        event.date === filter.date
+      );
+    }
+
+    // Filter by time
+    if (filter.time) {
+      filtered = filtered.filter(event => 
+        event.time.startsWith(filter.time) // Assuming event.time is in HH:MM format
+      );
+    }
+
+    setFilteredEvents(filtered);
   };
 
   const toggleSort = () => {
-    const sortedEvents = [...events].sort((a, b) => {
+    const sortedEvents = [...filteredEvents].sort((a, b) => {
       if (isAscending) {
         return new Date(a.date) - new Date(b.date);
       } else {
         return new Date(b.date) - new Date(a.date);
       }
     });
-    setEvents(sortedEvents);
+    setFilteredEvents(sortedEvents);
     setIsAscending(!isAscending);
   };
-
 
   if (loading) return <Typography variant="h6">Loading events...</Typography>;
   if (error) return <Typography variant="h6">{error}</Typography>;
@@ -175,21 +198,21 @@ const MainPage = () => {
                   placeholder="Search by username"
                   name="username"
                   value={filter.username}
-                  onChange={(e) => setFilter({ ...filter, username: e.target.value })}
+                  onChange={handleFilterChange}
                   className="filter-input"
                 />
                 <input
                   type="date"
                   name="date"
                   value={filter.date}
-                  onChange={(e) => setFilter({ ...filter, date: e.target.value })}
+                  onChange={handleFilterChange}
                   className="filter-input"
                 />
                 <input
                   type="time"
                   name="time"
                   value={filter.time}
-                  onChange={(e) => setFilter({ ...filter, time: e.target.value })}
+                  onChange={handleFilterChange}
                   className="filter-input"
                 />
                 <Button
@@ -197,7 +220,7 @@ const MainPage = () => {
                   color="success"
                   onClick={applyFilter}
                   sx={{ borderRadius: 5, padding: '10px 20px' }}>
-                  Enter
+                  Apply Filters
                 </Button>
               </Box>
             </Grid>
@@ -205,7 +228,7 @@ const MainPage = () => {
 
           <Grid item xs={12} sx={{ marginBottom: '20px' }}>
             <Grid container spacing={2}>
-              {events.map((event) => (
+              {filteredEvents.map((event) => (
                 <Grid item xs={12} sm={6} md={4} key={event.id}>
                   <EventCard event={event} onDelete={handleDeleteEvent} />
                 </Grid>

@@ -8,6 +8,7 @@ import ProfilePage from './components/ProfilePage';
 import ForgetPassword from './components/ForgetPassword';
 import ResetPassword from './components/ResetPassword';
 import EventDetails from './components/EventDetails';
+import EditEvent from './components/EditEvent'; 
 import './styles/App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/event/:id" element={<EventDetails />} /> 
+        <Route path="/edit-event/:id" element={<EditEvent />} />
       </Routes>
     </Router>
   );

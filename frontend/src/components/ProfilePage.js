@@ -135,8 +135,8 @@ function ProfilePage() {
               height: '100%',
               padding: '16px',
             }}>
-            {/* <ProfileMenu letter={username[0]} />  */}
-            <Typography variant="h3">{username}</Typography>
+             {/* <ProfileMenu letter={username[0]} />  */}
+             <Typography variant="h3">{username}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
               <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> {/* Display the aboutMe state */}
               <MenuItem onClick={handleEditAbout}>

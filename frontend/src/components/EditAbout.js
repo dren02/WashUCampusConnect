@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/makePost.css';
+import '../styles/editAbout.css'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 
@@ -11,14 +11,12 @@ const EditAbout = ({ about, closeModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Directly send the string instead of wrapping it in an object
-    const aboutData = updateAbout; // Just the string
+    const aboutData = updateAbout; 
     
     try {
-      // Update user's about section in backend
       await axios.put(`http://localhost:8000/auth/${username}/update-about/`, aboutData, {
         headers: {
-          'Content-Type': 'text/plain', // Set content type to text/plain
+          'Content-Type': 'text/plain',
         },
       });
       console.log('About section updated:', aboutData);
@@ -28,26 +26,25 @@ const EditAbout = ({ about, closeModal }) => {
       console.error('Error updating about section:', error);
     }
   };
-  
-  
 
   return (
-    <div className="modal-background">
-      <div className="modal-content">
+    <div className="editAbout-modal-background">
+      <div className="editAbout-modal-content">
         <h2>About Me</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="editAbout-form-group">
             <label htmlFor="details">You can add a brief introduction about yourself, including any extracurricular activities, such as clubs or organizations you're involved in!</label>
             <textarea
               id="details"
+              className="editAbout-textarea" 
               value={updateAbout}
               onChange={(e) => setUpdateAbout(e.target.value)}
               required
             ></textarea>
           </div>
-          <div className="form-actions">
-            <button type="button" onClick={closeModal}>Cancel</button>
-            <button type="submit">Update</button>
+          <div className="editAbout-form-actions">
+            <button type="button" className="editAbout-button" onClick={closeModal}>Cancel</button>
+            <button type="submit" className="editAbout-button">Update</button>
           </div>
         </form>
       </div>

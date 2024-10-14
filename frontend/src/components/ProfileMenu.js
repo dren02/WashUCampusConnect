@@ -96,7 +96,7 @@ const ProfileMenu = ({ letter }) => {
     const logout = () => {
         localStorage.removeItem('username');
         localStorage.removeItem('token');
-        navigate('/login'); 
+        navigate('/'); 
     };
 
     return (

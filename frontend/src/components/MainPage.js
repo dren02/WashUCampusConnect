@@ -97,6 +97,11 @@ const MainPage = () => {
     setFilteredEvents(filtered);
   };
 
+  const clearFilter = () => {
+    setFilter({ username: '', date: '', time: '' }); 
+    setFilteredEvents(events); 
+  };
+
   const toggleSort = () => {
     const sortedEvents = [...filteredEvents].sort((a, b) => {
       if (isAscending) {
@@ -222,6 +227,20 @@ const MainPage = () => {
                   sx={{ borderRadius: 5, padding: '10px 20px' }}>
                   Apply Filters
                 </Button>
+                <Button
+  variant="outlined"
+  color="primary" 
+  onClick={clearFilter}
+  sx={{ borderRadius: 5, padding: '5px 5px', fontSize: '10px', borderColor: '#42b72a', // Green border color
+    color: '#42b72a', 
+    '&:hover': {
+      backgroundColor: '#d3e6d3', 
+      borderColor: '#36a420', 
+    },
+  }}>
+  Clear Filter
+</Button>
+
               </Box>
             </Grid>
           )}

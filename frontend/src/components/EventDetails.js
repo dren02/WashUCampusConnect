@@ -7,16 +7,19 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const EventDetails = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const currUser = localStorage.getItem('username');
+  const [author, setAuthor] = useState('')
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/events/${id}`); // Adjust the API endpoint as necessary
         setEvent(response.data);
+        setAuthor(response.data.username)
       } catch (err) {
         setError('Failed to fetch event details.');
       } finally {
@@ -49,9 +52,11 @@ const EventDetails = () => {
           <PlaceIcon /> {event.address}
         </p>
       </Paper>
-      <Button variant="contained" color="primary" onClick={() => {/* Logic for editing the event */}}>
-        Edit Event
-      </Button>
+      {author === currUser && (
+        <Button variant="contained" color="primary" onClick={() => {/* Logic for editing the event */ }}>
+          Edit Event
+        </Button>
+      )}
     </Box>
   );
 };

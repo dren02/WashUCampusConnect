@@ -13,6 +13,8 @@ import axios from 'axios';
 import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import EditAbout from './EditAbout';
+import { useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -30,6 +32,7 @@ function ProfilePage() {
   const username = localStorage.getItem('username') || 'Guest';
   const [aboutMe, setAboutMe] = useState('');
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const navigate = useNavigate();
 
   const fetchEvents = async (tab) => {
     setLoading(true);
@@ -68,7 +71,7 @@ function ProfilePage() {
     };
     fetchAboutMe();
   }, [username]);
-  
+
 
   const postsToDisplay = selectedTab === 'myposts'
     ? myPosts.filter(event => event.username === username) // My Posts
@@ -108,9 +111,23 @@ function ProfilePage() {
     setIsEditModalVisible(!isEditModalVisible);
   };
 
+  const handleBackClick = () => {
+    navigate('/main');
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Navbar />
+      <ArrowBackIcon onClick={handleBackClick} t={2} sx={{
+        cursor: 'pointer',
+        fontSize: '2rem',
+        transition: 'transform 0.2s',
+        marginTop: '15px',
+        marginLeft: '20px',
+        '&:hover': {
+          transform: 'scale(1.2)',
+        },
+      }} />
       <Grid container spacing={2} justifyContent="center" style={{ height: '100%' }}>
         <Grid size={4}>
           <Box
@@ -135,8 +152,8 @@ function ProfilePage() {
               height: '100%',
               padding: '16px',
             }}>
-             {/* <ProfileMenu letter={username[0]} />  */}
-             <Typography variant="h3">{username}</Typography>
+            {/* <ProfileMenu letter={username[0]} />  */}
+            <Typography variant="h3">{username}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
               <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> {/* Display the aboutMe state */}
               <MenuItem onClick={handleEditAbout}>

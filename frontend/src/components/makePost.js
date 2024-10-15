@@ -45,7 +45,7 @@ const MakePost = ({ event, closeModal }) => {
   return (
     <div className="modal-background">
       <div className="modal-content">
-        <h2>Create or Edit Event</h2>
+        <h2>Create Event</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Event Name</label>

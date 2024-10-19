@@ -245,19 +245,28 @@ const MainPage = () => {
             </Grid>
           )}
 
-          <Grid item xs={12} sx={{ marginBottom: '20px' }}>
-            <Grid container spacing={2}>
-              {filteredEvents.map((event) => (
-                <Grid item xs={12} sm={6} md={4} key={event.id}>
-                  <EventCard event={event} onDelete={handleDeleteEvent} />
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
+<Grid item xs={12} sx={{ marginBottom: '20px' }}>
+<Grid container spacing={2} sx={{ paddingLeft: { xs: 0, md: 2, lg: 15 } }}>
+  {filteredEvents.map((event) => (
+    <Grid item xs={12} sm={6} md={4} lg={4} key={event.id}>
+     <EventCard 
+  event={event} 
+  onDelete={handleDeleteEvent}
+  sx={{ 
+    maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
+    margin: '0 auto'
+  }}
+/>
+    </Grid>
+  ))}
+</Grid>
 
-          {isPostModalVisible && (
-            <MakePost event={selectedEvent} closeModal={togglePostModal} />
-          )}
+</Grid>
+
+{isPostModalVisible && (
+  <MakePost event={selectedEvent} closeModal={togglePostModal} />
+)}
+
         </Grid>
       </Box>
 

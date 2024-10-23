@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
 import logo from '../assets/washuLogo.png';
+import EventsWidget from './EventsWidget';
 
 
 const HomePage = () => {
@@ -13,6 +14,7 @@ const HomePage = () => {
         <Link to="/login" className="button">Log In</Link>
       </div>
       <img src={logo} alt="WashU Logo" className="logo" /> 
+      <EventsWidget/>
     </div>
   );
 };

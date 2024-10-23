@@ -23,11 +23,16 @@
     margin: 5px 0;
   }
   
-  .event-description {
+  .event-description, .event-user {
     margin-top: 10px;
     color: #555;
   }
   
   .event-details:hover {
+    cursor: pointer;
+  }
+
+  .event-user:hover {
+    text-decoration: underline;
     cursor: pointer;
   }

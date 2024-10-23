@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import EditAbout from './EditAbout';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -29,10 +30,12 @@ function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTab, setSelectedTab] = useState('myposts');
-  const username = localStorage.getItem('username') || 'Guest';
+  const loggedInUser = localStorage.getItem('username') || 'Guest';
   const [aboutMe, setAboutMe] = useState('');
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const navigate = useNavigate();
+  const { username } = useParams(); // Get username from the URL params if it exists
+  const userToFetch = username || loggedInUser;
 
   const fetchEvents = async (tab) => {
     setLoading(true);
@@ -42,7 +45,7 @@ function ProfilePage() {
         setMyPosts(response.data);
       } else if (tab === 'savedposts') {
         const response = await axios.get('http://localhost:8000/auth');
-        const userSavedPosts = response.data.find(user => user.username === username);
+        const userSavedPosts = response.data.find(user => user.username === userToFetch);
         if (userSavedPosts) {
           setSavedEventIds(userSavedPosts.savedEvents);
         } else {
@@ -63,7 +66,7 @@ function ProfilePage() {
   useEffect(() => {
     const fetchAboutMe = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/auth/${username}/about`);
+        const response = await axios.get(`http://localhost:8000/auth/${userToFetch}/about`);
         setAboutMe(response.data.about);
       } catch (err) {
         setAboutMe("About me unavailable");
@@ -74,7 +77,7 @@ function ProfilePage() {
 
 
   const postsToDisplay = selectedTab === 'myposts'
-    ? myPosts.filter(event => event.username === username) // My Posts
+    ? myPosts.filter(event => event.username === userToFetch) // My Posts
     : savedPosts; // Saved Posts
 
   const handleTabChange = (event, newTab) => {
@@ -139,7 +142,7 @@ function ProfilePage() {
               border: 'none',
               padding: '16px',
             }}>
-            <Avatar sx={{ height: '200px', width: '200px', fontSize: '80px', backgroundColor: '#BA0C2F' }}>{username[0]} </Avatar>
+            <Avatar sx={{ height: '200px', width: '200px', fontSize: '80px', backgroundColor: '#BA0C2F' }}>{userToFetch[0]} </Avatar>
           </Box>
         </Grid>
         <Grid size={8}>
@@ -153,7 +156,7 @@ function ProfilePage() {
               padding: '16px',
             }}>
             {/* <ProfileMenu letter={username[0]} />  */}
-            <Typography variant="h3">{username}</Typography>
+            <Typography variant="h3">{username || loggedInUser}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
               <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> {/* Display the aboutMe state */}
               <MenuItem onClick={handleEditAbout}>

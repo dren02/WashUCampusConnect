@@ -42,6 +42,10 @@ const EventCard = ({ event, onDelete }) => {
     navigate(`/event/${id}`);
   };
 
+  const handleUsernameClick = () => {
+    navigate(`/profile/${username}`);
+  };
+
   return (
     <Paper className="event-card">
       <div className="event-details" onClick={handleCardClick}>
@@ -52,7 +56,9 @@ const EventCard = ({ event, onDelete }) => {
           alt="WashU Logo"
         />
         <h2 className="event-title"><strong>{name}</strong></h2>
-        <p className="event-description">{username}</p>
+      </div>
+      <p className="event-user" onClick={handleUsernameClick}>{username}</p>
+      <div className="event-details" onClick={handleCardClick}>
         <p className="event-date"><CalendarMonthIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {date}</p>
         <p className="event-time"><AccessTimeIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {time}</p>
         <p className="event-location"><PlaceIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {address}</p>

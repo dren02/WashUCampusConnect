@@ -192,10 +192,10 @@ function ProfilePage() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
+            alignItems: 'center',    
             height: '100%',
             border: 'none',
           }}>
-            <div>
               {postsToDisplay.length > 0 ? (
                 postsToDisplay.map((event) => (
                   <ProfileCard
@@ -207,7 +207,6 @@ function ProfilePage() {
               ) : (
                 <div>No posts available</div>
               )}
-            </div>
           </Box>
         </Grid>
       </Grid>

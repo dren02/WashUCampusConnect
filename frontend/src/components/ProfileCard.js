@@ -4,49 +4,39 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
-import washuLogo from '../assets/washuLogo.png';
 import Button from '@mui/material/Button';
 import CardActions from '@mui/material/CardActions';
-import PlaceIcon from '@mui/icons-material/Place';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import PlaceIcon from '@mui/icons-material/Place';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import axios from 'axios'; 
+import { useNavigate } from 'react-router-dom';
+import washuLogo from '../assets/washuLogo.png';
 
 const ITEM_HEIGHT = 45;
 
-const options = [
-    'Edit',
-    'Delete'
-];
+const options = ['Edit', 'Delete'];
 
 const ProfileCard = ({ event, onDelete }) => {
-    const { id, name, date, time, address, details_of_event, username } = event;
-    const currUser = localStorage.getItem('username')
+    const { id, name, date, time, address, details_of_event, username, image_url } = event;
+    const currUser = localStorage.getItem('username');
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
+    const displayedImage = image_url || washuLogo;
 
-    const handleDropdown = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
+    const handleDropdown = (event) => setAnchorEl(event.currentTarget);
     const handleDeleteOption = async () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this event? This action cannot be undone.");
         if (confirmDelete) {
             onDelete(id);
         }
     };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
+    const handleClose = () => setAnchorEl(null);
     const handleSave = async () => {
         try {
             const response = await axios.put(`http://localhost:8000/auth/${currUser}/save-event/`, {
@@ -58,21 +48,24 @@ const ProfileCard = ({ event, onDelete }) => {
             alert("An error occurred while saving the event.");
         }
     };
-
-    const handleEdit = () => {
-        navigate(`/edit-event/${id}`); // Navigate to edit event page
-    };
+    const handleEdit = () => navigate(`/edit-event/${id}`);
+    const handleCardClick = () => navigate(`/event/${id}`);
 
     return (
-        <Card sx={{ display: 'flex', maxWidth: 900, margin: 1 }}>
-            <CardActionArea sx={{ display: 'flex', flexDirection: 'row' }}>
+        <Card sx={{ display: 'flex', width: 900, height: 200, margin: 1 }}>
+            <CardActionArea sx={{ display: 'flex', flexDirection: 'row' }} onClick={handleCardClick}>
                 <CardMedia
                     component="img"
-                    sx={{ width: '100px', height: 'auto', marginLeft: '35px' }}
-                    image={washuLogo}
-                    alt="WashU Logo"
+                    image={displayedImage}
+                    alt="Event Image"
+                    sx={{
+                        width: 240, 
+                        height: '100%',
+                        objectFit: 'cover',  
+                        flexShrink: 0,
+                    }}
                 />
-                <CardContent sx={{ flex: 1, textAlign: 'left', marginLeft: '30px' }}>
+                <CardContent sx={{ flex: 1, textAlign: 'left', paddingLeft: 3 }}>
                     <Typography gutterBottom variant="h5" component="div">
                         {name}
                     </Typography>
@@ -93,8 +86,8 @@ const ProfileCard = ({ event, onDelete }) => {
                     </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <Button size="small" color="primary" onClick={handleSave}  sx={{ marginBottom: 6, marginTop: 8 }}>
+            <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingRight: 2 }}>
+                <Button size="small" color="primary" onClick={(e) => { e.stopPropagation(); handleSave(); }} sx={{ marginBottom: 6, marginTop: 8 }}>
                     Save
                 </Button>
                 {currUser === username && (
@@ -104,7 +97,7 @@ const ProfileCard = ({ event, onDelete }) => {
                         aria-controls={open ? 'long-menu' : undefined}
                         aria-expanded={open ? 'true' : undefined}
                         aria-haspopup="true"
-                        onClick={handleDropdown}
+                        onClick={(e) => { e.stopPropagation(); handleDropdown(e); }}
                     >
                         <MoreVertIcon />
                     </IconButton>

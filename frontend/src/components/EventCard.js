@@ -11,10 +11,10 @@ import washuLogo from '../assets/washuLogo.png';
 
 
 const EventCard = ({ event, onDelete }) => {
-  const { id, name, date, time, address, details_of_event, username } = event;
+  const { id, name, date, time, address, details_of_event, username, image_url } = event;
   const currUser = localStorage.getItem('username');
   const navigate = useNavigate();
-
+  const displayedImage = image_url || washuLogo;
   const handleSave = async () => {
     try {
       const response = await axios.put(`http://localhost:8000/auth/${currUser}/save-event/`, {
@@ -52,7 +52,7 @@ const EventCard = ({ event, onDelete }) => {
         <CardMedia
           component="img"
           sx={{ width: '100px', height: 'auto', margin: '10px auto' }}
-          image={washuLogo}
+          image={displayedImage}
           alt="WashU Logo"
         />
         <h2 className="event-title"><strong>{name}</strong></h2>

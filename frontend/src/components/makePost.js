@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/makePost.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const MakePost = ({ event, closeModal }) => {
   const [name, setName] = useState(event ? event.name : '');
@@ -9,9 +9,10 @@ const MakePost = ({ event, closeModal }) => {
   const [time, setTime] = useState(event ? event.time : '');
   const [address, setAddress] = useState(event ? event.address : '');
   const [details_of_event, setDetails] = useState(event ? event.details_of_event : '');
+  const [image, setImage] = useState(null); // New state for image file
   const [username, setUsername] = useState('');
 
-  const navigate = useNavigate(); // Define navigate function
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -31,10 +32,21 @@ const MakePost = ({ event, closeModal }) => {
       details_of_event,
       username,
     };
+    
+    const formData = new FormData();
+    Object.entries(eventData).forEach(([key, value]) => formData.append(key, value));
+    
+    if (image) {
+      formData.append("image", image);
+    }
 
     try {
-      await axios.post('http://localhost:8000/events', eventData);
-      console.log('Event created:', eventData);
+      await axios.post('http://localhost:8000/events', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Event created:', formData);
       closeModal();
       navigate(0); // Reload the current page to reflect the newly created event
     } catch (error) {
@@ -45,8 +57,9 @@ const MakePost = ({ event, closeModal }) => {
   return (
     <div className="modal-background">
       <div className="modal-content">
-        <h2>Create Event</h2>
-        <form onSubmit={handleSubmit}>
+        <h2>Create or Edit Event</h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          {/* Existing form fields */}
           <div className="form-group">
             <label htmlFor="name">Event Name</label>
             <input
@@ -95,6 +108,15 @@ const MakePost = ({ event, closeModal }) => {
               onChange={(e) => setDetails(e.target.value)}
               required
             ></textarea>
+          </div>
+          <div className="form-group">
+            <label htmlFor="image">Event Image</label>
+            <input
+              type="file"
+              id="image"
+              onChange={(e) => setImage(e.target.files[0])}
+              accept="image/*"
+            />
           </div>
           <div className="form-actions">
             <button type="button" onClick={closeModal}>Cancel</button>

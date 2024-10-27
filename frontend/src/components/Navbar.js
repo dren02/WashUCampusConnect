@@ -7,10 +7,16 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import AdbIcon from '@mui/icons-material/Adb';
 import ProfileMenu from '../components/ProfileMenu';
+import { useNavigate } from 'react-router-dom';
 
 
 function ResponsiveAppBar() {
   const username = localStorage.getItem('username') || 'Guest';
+  const navigate = useNavigate();
+
+  const handleFeaturedEventsClick = () => {
+    navigate('/featured-events');
+  }
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'white', color: '#BA0C2F', borderBottom: '1px solid #D3D3D3' }}>
@@ -22,7 +28,6 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -41,7 +46,6 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -55,9 +59,14 @@ function ResponsiveAppBar() {
             CampusConnect
           </Typography>
           </Link>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}> </Box>
-          <Box sx={{ flexGrow: 0 }}>
-              <ProfileMenu letter={username[0]} /> 
+          <Box sx={{ flexGrow: 1 }} /> {/* This Box pushes the content to the right */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Link to="/featured-events" style={{ textDecoration: 'none', color: '#BA0C2F', marginRight: '20px' }}>
+              <Typography variant="body1" sx={{ fontWeight: 600 }} onClick={handleFeaturedEventsClick} >
+                Featured Events
+              </Typography>
+            </Link>
+            <ProfileMenu letter={username[0]} />
           </Box>
         </Toolbar>
       </Container>

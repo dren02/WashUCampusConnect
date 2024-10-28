@@ -49,12 +49,20 @@ const EventCard = ({ event, onDelete }) => {
   return (
     <Paper className="event-card">
       <div className="event-details" onClick={handleCardClick}>
-        <CardMedia
-          component="img"
-          sx={{ width: '100px', height: 'auto', margin: '10px auto' }}
-          image={displayedImage}
-          alt="WashU Logo"
-        />
+      <CardMedia
+  component="img"
+  sx={{
+    width: '100%',           
+    height: '150px',         
+    objectFit: 'contain',     
+    margin: '0 auto',         
+    borderRadius: '8px',      
+  }}
+  image={displayedImage}
+  alt="Event Image"
+/>
+
+
         <h2 className="event-title"><strong>{name}</strong></h2>
       </div>
       <p className="event-user" onClick={handleUsernameClick}>{username}</p>

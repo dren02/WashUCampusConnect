@@ -7,3 +7,4 @@ class Event(BaseModel):
     time: str
     address: str
     username: str
+    image_url: str = None

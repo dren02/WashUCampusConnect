@@ -16,6 +16,10 @@ import EditAbout from './EditAbout';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -36,6 +40,8 @@ function ProfilePage() {
   const navigate = useNavigate();
   const { username } = useParams(); // Get username from the URL params if it exists
   const userToFetch = username || loggedInUser;
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
+  const [searchUsername, setSearchUsername] = useState(''); 
 
   const fetchEvents = async (tab) => {
     setLoading(true);
@@ -118,6 +124,20 @@ function ProfilePage() {
     navigate('/main');
   }
 
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
+  };
+
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    if (!searchUsername.trim()) {
+      navigate(`/profile/${loggedInUser}`);  // Redirect to the logged-in user's profile if input is empty
+    } else {
+      navigate(`/profile/${searchUsername}`);  // Navigate to the searched user's profile
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Navbar />
@@ -131,6 +151,94 @@ function ProfilePage() {
           transform: 'scale(1.2)',
         },
       }} />
+
+  {/* drop down search bar */}
+  <Box sx={{ position: 'absolute', top: '100px', right: '20px' }}>
+        <Box onClick={toggleDropdown} sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <Typography variant="body2" sx={{ color: '#6D6D6D', fontSize: '14px' }}>
+            Search for other users
+          </Typography>
+          <ExpandMoreIcon sx={{ fontSize: '1rem', color: '#6D6D6D', marginLeft: '4px' }} />
+        </Box>
+
+        {/* drop down content */}
+        <Collapse in={dropdownOpen} sx={{ marginTop: '8px' }}>
+          <Box
+            component="form"
+            onSubmit={handleSearchSubmit}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              padding: '8px',
+              backgroundColor: '#f9f9f9',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              width: '200px',
+            }}
+          >
+            <TextField
+              label="Username"
+              variant="outlined"
+              size="small"
+              value={searchUsername}
+              onChange={(e) => setSearchUsername(e.target.value)}
+              sx={{
+                width: '100%',
+                backgroundColor: '#fff',
+                borderRadius: '4px',
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#6D6D6D',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#9e9e9e',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#6D6D6D',
+                  },
+                },
+              }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              
+              sx={{
+                width: '100%',
+                marginTop: '8px',
+                textTransform: 'none',
+                backgroundColor: '#4A4A4A', 
+                color: '#FFFFFF',           
+                '&:hover': {
+                  backgroundColor: '#333333', 
+                },
+              }}
+            >
+              Search
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate(`/profile/${loggedInUser}`)}
+              sx={{
+                width: '100%',
+                marginTop: '8px',
+                textTransform: 'none',
+                backgroundColor: '#4A4A4A', 
+                color: '#FFFFFF',           
+                '&:hover': {
+                  backgroundColor: '#333333', 
+                },
+              }}
+            >
+              Return to Your Profile
+            </Button>
+          </Box>
+        </Collapse>
+      </Box>
+
+
       <Grid container spacing={2} justifyContent="center" style={{ height: '100%' }}>
         <Grid size={4}>
           <Box

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Typography, Paper, Button, TextField, List, ListItem, ListItemText, Divider } from '@mui/material';
 import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -14,6 +14,7 @@ const EventDetails = () => {
   const currUser = localStorage.getItem('username');
   const [author, setAuthor] = useState('');
   const [hasRSVPed, setHasRSVPed] = useState(false); // RSVP state
+  const navigate = useNavigate();
 
   // New state variables
   const [rsvpedUsers, setRsvpedUsers] = useState([]); // State to track RSVPed users
@@ -70,6 +71,10 @@ const EventDetails = () => {
     }
   };
 
+  const handleEdit = () => {
+    navigate(`/edit-event/${id}`);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!event) return <p>No event found.</p>;
@@ -116,7 +121,7 @@ const EventDetails = () => {
               {hasRSVPed ? "RSVP'd" : "RSVP"}
             </Button>
             {author === currUser && (
-              <Button variant="contained" color="primary" sx={{ width: '150px' }}>
+              <Button variant="contained" color="primary" sx={{ width: '150px' }} onClick={handleEdit}>
                 Edit Event
               </Button>
             )}

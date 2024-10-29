@@ -5,7 +5,6 @@ from schema.schemas import list_serializer, event_serializer
 from bson import ObjectId
 from pathlib import Path
 import shutil
-import json
 
 router = APIRouter()
 

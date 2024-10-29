@@ -4,18 +4,18 @@ const EventType = ({ category }) => {
 
     const categoryMap = {
         default: 'localist-widget-11073029',
-        concerts: 'localist-widget-53630921',
-        meetings: 'localist-widget-47970076',
+        concerts: 'localist-widget-39328173',
+        meetings: 'localist-widget-98018405',
         exhibits: 'localist-widget-53834284',
         lectures: 'localist-widget-33579717',
         research: 'localist-widget-33272447',
         seminar: 'localist-widget-17458651',
     };
-    
+
     const typeMap = {
         default: '',
         concerts: '30449557772574',
-        meetings: '30643243314251',
+        meetings: '30449557778695',
         exhibits: '30643243314251',
         lectures: '30449557777403',
         research: '33741509804990',

@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
 import logo from '../assets/washuLogo.png';
-import EventsWidget from './EventsWidget';
 
 
 const HomePage = () => {

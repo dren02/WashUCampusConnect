@@ -14,7 +14,6 @@ const HomePage = () => {
         <Link to="/login" className="button">Log In</Link>
       </div>
       <img src={logo} alt="WashU Logo" className="logo" /> 
-      <EventsWidget/>
     </div>
   );
 };

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import washuLogo from '../assets/washuLogo.png';
 
 
-const EventCard = ({ event, onDelete }) => {
+const EventCard = ({ event, onDelete, showRSVP }) => {
   const { id, name, date, time, address, details_of_event, username, image_url } = event;
   const currUser = localStorage.getItem('username');
   const navigate = useNavigate();
@@ -24,6 +24,19 @@ const EventCard = ({ event, onDelete }) => {
     } catch (error) {
       console.error("Error saving event:", error);
       alert("An error occurred while saving the event.");
+    }
+  };
+
+//RSVP
+  const handleRSVP = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, {
+        username: currUser
+      });
+      alert(response.data.message || "RSVP successful!");
+    } catch (error) {
+      console.error("Error with RSVP:", error);
+      alert("An error occurred while RSVPing for the event.");
     }
   };
 
@@ -49,12 +62,20 @@ const EventCard = ({ event, onDelete }) => {
   return (
     <Paper className="event-card">
       <div className="event-details" onClick={handleCardClick}>
-        <CardMedia
-          component="img"
-          sx={{ width: '100px', height: 'auto', margin: '10px auto' }}
-          image={displayedImage}
-          alt="WashU Logo"
-        />
+      <CardMedia
+  component="img"
+  sx={{
+    width: '100%',           
+    height: '150px',         
+    objectFit: 'contain',     
+    margin: '0 auto',         
+    borderRadius: '8px',      
+  }}
+  image={displayedImage}
+  alt="Event Image"
+/>
+
+
         <h2 className="event-title"><strong>{name}</strong></h2>
       </div>
       <p className="event-user" onClick={handleUsernameClick}>{username}</p>
@@ -65,6 +86,10 @@ const EventCard = ({ event, onDelete }) => {
         <p className="event-description">{details_of_event}</p>
       </div>
       <Button size="small" color="primary" onClick={handleSave} sx={{ marginTop: 'auto' }}> Save </Button>
+
+      {showRSVP && (
+        <Button size="small" color="success" onClick={handleRSVP} sx={{ marginTop: 'auto', marginLeft: '10px' }}> RSVP </Button>
+      )}
 
       {/* Show Edit and Delete buttons only if the current user is the creator of the event */}
       {username === currUser && (

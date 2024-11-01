@@ -13,22 +13,21 @@ const EditEvent = () => {
         date: '',
         time: '',
         address: '',
-        username: '' // Keep the username in the state
+        username: ''
     });
+    const [image, setImage] = useState(null); // New state for image file
 
-    // Fetch event data when component mounts
     useEffect(() => {
         const fetchEventData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/events/${id}`);
-                console.log('Fetched event data:', response.data); // Debug log
                 setEventData({
                     name: response.data.name,
                     details_of_event: response.data.details_of_event,
                     date: response.data.date,
                     time: response.data.time,
                     address: response.data.address,
-                    username: response.data.username, // Keep the username
+                    username: response.data.username,
                 });
             } catch (error) {
                 console.error('Error fetching event data:', error);
@@ -38,13 +37,21 @@ const EditEvent = () => {
         fetchEventData();
     }, [id]);
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const formData = new FormData();
+        Object.entries(eventData).forEach(([key, value]) => formData.append(key, value));
+        
+        if (image) {
+            formData.append("image", image);
+        }
+
         try {
-            await axios.put(`http://localhost:8000/events/${id}`, {
-                ...eventData,
-                username: eventData.username // Ensure username is included in the update
+            await axios.put(`http://localhost:8000/events/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
             navigate(`/main`); // Redirect after updating
         } catch (error) {
@@ -52,7 +59,6 @@ const EditEvent = () => {
         }
     };
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEventData((prevData) => ({ ...prevData, [name]: value }));
@@ -61,7 +67,7 @@ const EditEvent = () => {
     return (
         <Box className="edit-event-container">
             <Typography className="edit-event-title">Edit Event</Typography>
-            <form className="edit-event-form" onSubmit={handleSubmit}>
+            <form className="edit-event-form" onSubmit={handleSubmit} encType="multipart/form-data">
                 <TextField
                     fullWidth
                     label="Event Name"
@@ -88,7 +94,7 @@ const EditEvent = () => {
                     label="Date"
                     type="date"
                     name="date"
-                    value={eventData.date.split('T')[0]} // Format date for input
+                    value={eventData.date.split('T')[0]} 
                     onChange={handleChange}
                     required
                     margin="normal"
@@ -99,7 +105,7 @@ const EditEvent = () => {
                     label="Time"
                     type="time"
                     name="time"
-                    value={eventData.time} // Ensure this matches the format returned
+                    value={eventData.time}
                     onChange={handleChange}
                     required
                     margin="normal"
@@ -114,6 +120,11 @@ const EditEvent = () => {
                     required
                     margin="normal"
                     InputLabelProps={{ shrink: true }} 
+                />
+                <input
+                    type="file"
+                    onChange={(e) => setImage(e.target.files[0])}
+                    accept="image/*"
                 />
                 <Button variant="contained" type="submit">
                     Update Event

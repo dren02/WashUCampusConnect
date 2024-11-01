@@ -24,7 +24,8 @@ const MainPage = () => {
   const [filter, setFilter] = useState({
     username: '',
     date: '',
-    time: ''
+    time: '',
+    name: '' // New field for event name search
   });
 
   const fetchEvents = async () => {
@@ -42,6 +43,35 @@ const MainPage = () => {
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    // Dynamically filter events based on the current filter state
+    let filtered = events;
+
+    if (filter.username) {
+      filtered = filtered.filter(event => 
+        event.username.toLowerCase().includes(filter.username.toLowerCase())
+      );
+    }
+
+    if (filter.date) {
+      filtered = filtered.filter(event => event.date === filter.date);
+    }
+
+    if (filter.time) {
+      filtered = filtered.filter(event => 
+        event.time.startsWith(filter.time)
+      );
+    }
+
+    if (filter.name) {
+      filtered = filtered.filter(event =>
+        event.name.toLowerCase().includes(filter.name.toLowerCase())
+      );
+    }
+
+    setFilteredEvents(filtered);
+  }, [filter, events]);
 
   const handleFilterChange = (e) => {
     setFilter({ ...filter, [e.target.name]: e.target.value });
@@ -70,35 +100,8 @@ const MainPage = () => {
     }
   };
 
-  const applyFilter = () => {
-    let filtered = events;
-
-    // Filter by username
-    if (filter.username) {
-      filtered = filtered.filter(event => 
-        event.username.toLowerCase().includes(filter.username.toLowerCase())
-      );
-    }
-
-    // Filter by date
-    if (filter.date) {
-      filtered = filtered.filter(event => 
-        event.date === filter.date
-      );
-    }
-
-    // Filter by time
-    if (filter.time) {
-      filtered = filtered.filter(event => 
-        event.time.startsWith(filter.time) // Assuming event.time is in HH:MM format
-      );
-    }
-
-    setFilteredEvents(filtered);
-  };
-
   const clearFilter = () => {
-    setFilter({ username: '', date: '', time: '' }); 
+    setFilter({ username: '', date: '', time: '', name: '' }); 
     setFilteredEvents(events); 
   };
 
@@ -158,7 +161,6 @@ const MainPage = () => {
                 Filter Events
               </Button>
 
-              {/* Sort Button */}
               <Button
                 variant="contained"
                 color="primary"
@@ -194,80 +196,81 @@ const MainPage = () => {
               </Button>
             </Box>
           </Grid>
-
           {isFilterVisible && (
-            <Grid item xs={12}>
-              <Box className="filter-section" sx={{ display: 'flex', gap: 2 }}>
-                <input
-                  type="text"
-                  placeholder="Search by username"
-                  name="username"
-                  value={filter.username}
-                  onChange={handleFilterChange}
-                  className="filter-input"
-                />
-                <input
-                  type="date"
-                  name="date"
-                  value={filter.date}
-                  onChange={handleFilterChange}
-                  className="filter-input"
-                />
-                <input
-                  type="time"
-                  name="time"
-                  value={filter.time}
-                  onChange={handleFilterChange}
-                  className="filter-input"
-                />
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={applyFilter}
-                  sx={{ borderRadius: 5, padding: '10px 20px' }}>
-                  Apply Filters
-                </Button>
-                <Button
-  variant="outlined"
-  color="primary" 
-  onClick={clearFilter}
-  sx={{ borderRadius: 5, padding: '5px 5px', fontSize: '10px', borderColor: '#42b72a', // Green border color
-    color: '#42b72a', 
-    '&:hover': {
-      backgroundColor: '#d3e6d3', 
-      borderColor: '#36a420', 
-    },
-  }}>
-  Clear Filter
-</Button>
+              <Grid item xs={12}>
+                <Box className="filter-section" sx={{ display: 'flex', gap: 2 }}>
+                  <input
+                    type="text"
+                    placeholder="Search by event name"
+                    name="name"
+                    value={filter.name}
+                    onChange={handleFilterChange}
+                    className="filter-input"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search by username"
+                    name="username"
+                    value={filter.username}
+                    onChange={handleFilterChange}
+                    className="filter-input"
+                  />
+                  <input
+                    type="date"
+                    name="date"
+                    value={filter.date}
+                    onChange={handleFilterChange}
+                    className="filter-input"
+                  />
+                  <input
+                    type="time"
+                    name="time"
+                    value={filter.time}
+                    onChange={handleFilterChange}
+                    className="filter-input"
+                  />
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={clearFilter}
+                    sx={{
+                      borderRadius: 5,
+                      padding: '5px 5px',
+                      fontSize: '10px',
+                      borderColor: '#42b72a',
+                      color: '#42b72a',
+                      '&:hover': {
+                        backgroundColor: '#d3e6d3',
+                        borderColor: '#36a420',
+                      },
+                    }}>
+                    Clear Filter
+                  </Button>
+                </Box>
+              </Grid>
+            )}
 
-              </Box>
+          <Grid item xs={12} sx={{ marginBottom: '20px' }}>
+            <Grid container spacing={2} sx={{ paddingLeft: { xs: 0, md: 2, lg: 15 } }}>
+              {filteredEvents.map((event) => (
+                <Grid item xs={12} sm={6} md={4} lg={4} key={event.id}>
+                  <EventCard
+                    event={event}
+                    onDelete={handleDeleteEvent}
+                    showRSVP={true}
+                    sx={{
+                      maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
+                      margin: '0 auto'
+                    }}
+                  />
+                </Grid>
+              ))}
             </Grid>
+          </Grid>
+
+          {isPostModalVisible && (
+            <MakePost event={selectedEvent} closeModal={togglePostModal} />
           )}
-
-<Grid item xs={12} sx={{ marginBottom: '20px' }}>
-<Grid container spacing={2} sx={{ paddingLeft: { xs: 0, md: 2, lg: 15 } }}>
-  {filteredEvents.map((event) => (
-    <Grid item xs={12} sm={6} md={4} lg={4} key={event.id}>
-     <EventCard 
-  event={event} 
-  onDelete={handleDeleteEvent}
-  showRSVP={true} //rsvp
-  sx={{ 
-    maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
-    margin: '0 auto'
-  }}
-/>
-    </Grid>
-  ))}
-</Grid>
-
-</Grid>
-
-{isPostModalVisible && (
-  <MakePost event={selectedEvent} closeModal={togglePostModal} />
-)}
-
         </Grid>
       </Box>
 

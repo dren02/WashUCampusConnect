@@ -60,11 +60,50 @@ async def create_event(
     collection_name.insert_one(event_data)
     return event_serializer(event_data)
 
-
+"""
 # Put request methods
 @router.put("/{id}")
 async def put_event(id: str, event: Event):
     collection_name.find_one_and_update({"_id": ObjectId(id)}, {"$set": dict(event)})
+"""
+
+@router.put("/{id}")
+async def put_event(
+    id: str,
+    name: str = Form(...),
+    details_of_event: str = Form(...),
+    date: str = Form(...),
+    time: str = Form(...),
+    address: str = Form(...),
+    username: str = Form(...),
+    image: UploadFile = File(None)  # Optional image upload for edit
+):
+    # Handle optional image update
+    image_url = None
+    if image:
+        image_dir = Path("images")
+        image_dir.mkdir(exist_ok=True)  # Ensure the directory exists
+        image_path = image_dir / image.filename
+        with image_path.open("wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+        image_url = f"http://localhost:8000/images/{image.filename}"
+
+    # Update event data with image URL if provided
+    event_data = {
+        "name": name,
+        "details_of_event": details_of_event,
+        "date": date,
+        "time": time,
+        "address": address,
+        "username": username,
+    }
+    if image_url:
+        event_data["image_url"] = image_url  # Only update image URL if a new image is uploaded
+
+    # Update the event document
+    collection_name.find_one_and_update({"_id": ObjectId(id)}, {"$set": event_data})
+    updated_event = collection_name.find_one({"_id": ObjectId(id)})
+    return event_serializer(updated_event)
 
 
 # Delete request methods

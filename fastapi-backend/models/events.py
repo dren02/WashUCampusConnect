@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class Event(BaseModel):
     name: str
@@ -6,5 +7,6 @@ class Event(BaseModel):
     date: str
     time: str
     address: str
-    username: str
+    username: str 
     image_url: str = None
+    rsvps: List[str] = []

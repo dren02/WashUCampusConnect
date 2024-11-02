@@ -9,7 +9,8 @@ def event_serializer(event) -> dict:
         "time": event["time"],
         "address": event["address"],
         "username": event["username"],
-        "image_url": event.get("image_url", "http://localhost:8000/images/default_image.png")
+        "image_url": event.get("image_url", "http://localhost:8000/images/default_image.png"),
+        "rsvps": event.get("rsvps", [])
     }
  
 # Serializer for users

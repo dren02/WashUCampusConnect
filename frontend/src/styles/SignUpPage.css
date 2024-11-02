@@ -6,6 +6,9 @@
   min-height: 100vh; 
   background-color: #f0f2f5;
   padding: 20px;
+  background: linear-gradient(135deg, #fbcdd4 0%, #fbeaf3 50%, #FFFAF5 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
 }
 
 .signup-container h1 {

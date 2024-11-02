@@ -4,18 +4,46 @@
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  background-color: #f8f9fa; 
   padding: 40px 20px;
   font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #fbcdd4 0%, #fbeaf3 50%, #FFFAF5 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+  
+  
 }
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
 
 .home-container h1 {
   color: #BA0C2F;
   margin-bottom: 30px;
   font-size: 2.8rem;
   text-align: center;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  opacity: 0;
+  animation: fadeIn 1.5s ease forwards; /* Fade-in animation */
 }
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
 
 .button-container {
   display: flex;
@@ -37,22 +65,27 @@
   line-height: normal; 
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 2px solid transparent; 
+  border: 2px solid transparent;
 }
 
 .button:hover {
   background-color: #a52919; 
   transform: translateY(-3px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2), 0 0 10px rgba(186, 12, 47, 0.5); /* Adds a glow effect */
   border: 2px solid #BA0C2F; 
 }
 
 .logo {
-  width: 200px; 
-  height: auto; 
-  display: block; 
-  margin: 20px auto; 
-  border-radius: 10px; 
+  width: 200px;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05); /* Slightly enlarges on hover */
 }
 
 @media (max-width: 768px) {

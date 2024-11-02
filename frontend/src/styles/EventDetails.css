@@ -1,0 +1,61 @@
+/* EventDetails.css */
+.event-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .event-details-container {
+    background-color: #f0f0f0; /* Light gray background */
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  .event-details-header {
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem; /* Increase header font size */
+  }
+  
+  .event-details-paper {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff; /* White background for event details */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .comment-input {
+    margin-top: 20px;
+  }
+  
+  .rsvp-users-paper {
+    padding: 20px;
+    max-height: 60vh;
+    overflow: auto;
+    border-radius: 10px;
+    background-color: #ffffff; /* White background for RSVP'd users */
+  }
+  
+  /* Button Styles */
+  .event-button {
+    width: 150px;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Add transition for smooth hover effect */
+  }
+  
+  .event-button:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Add specific hover effects for each button variant */
+  .success-button:hover {
+    background-color: #4CAF50; /* Darker green for success */
+  }
+  
+  .primary-button:hover {
+    background-color: #3f51b5; /* Darker blue for primary */
+  }
+  

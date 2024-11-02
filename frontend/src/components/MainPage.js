@@ -5,7 +5,7 @@ import '../styles/MainPage.css';
 import axios from 'axios';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Navbar from '../components/Navbar';
-import { Box, Grid, Typography, Button } from '@mui/material';
+import { Box, Grid, Typography, Button, Menu, MenuItem } from '@mui/material';
 import SortAscendingIcon from '@mui/icons-material/ArrowUpward';
 import SortDescendingIcon from '@mui/icons-material/ArrowDownward';
 import washuBanner from '../assets/washubanner.png';
@@ -20,6 +20,9 @@ const MainPage = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const username = localStorage.getItem('username') || 'Guest';
   const [isAscending, setIsAscending] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null); // Sort For controlling the menu
+  const [sortType, setSortType] = useState('date'); //sort
+  const [originalEvents, setOriginalEvents] = useState([]);
 
   const [filter, setFilter] = useState({
     username: '',
@@ -33,6 +36,7 @@ const MainPage = () => {
       const response = await axios.get('http://localhost:8000/events');
       setEvents(response.data);
       setFilteredEvents(response.data); // Set filteredEvents to the fetched events initially
+      setOriginalEvents(response.data);
     } catch (err) {
       setError('Failed to fetch events.');
     } finally {
@@ -49,7 +53,7 @@ const MainPage = () => {
     let filtered = events;
 
     if (filter.username) {
-      filtered = filtered.filter(event => 
+      filtered = filtered.filter(event =>
         event.username.toLowerCase().includes(filter.username.toLowerCase())
       );
     }
@@ -59,7 +63,7 @@ const MainPage = () => {
     }
 
     if (filter.time) {
-      filtered = filtered.filter(event => 
+      filtered = filtered.filter(event =>
         event.time.startsWith(filter.time)
       );
     }
@@ -101,20 +105,40 @@ const MainPage = () => {
   };
 
   const clearFilter = () => {
-    setFilter({ username: '', date: '', time: '', name: '' }); 
-    setFilteredEvents(events); 
+    setFilter({ username: '', date: '', time: '', name: '' });
+    setFilteredEvents(events);
   };
 
-  const toggleSort = () => {
+  const handleSortMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleSortMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const toggleSort = (type) => {
     const sortedEvents = [...filteredEvents].sort((a, b) => {
-      if (isAscending) {
-        return new Date(a.date) - new Date(b.date);
-      } else {
-        return new Date(b.date) - new Date(a.date);
+      if (type === 'date') {
+        return isAscending
+          ? new Date(a.date) - new Date(b.date)
+          : new Date(b.date) - new Date(a.date);
+      } else if (type === 'name') {
+        return isAscending
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
       }
     });
     setFilteredEvents(sortedEvents);
     setIsAscending(!isAscending);
+    setSortType(type);
+    handleSortMenuClose(); // Close the menu after selecting
+  };
+
+  const clearSort = () => {
+    setFilteredEvents(originalEvents); // Reset to original order
+    setSortType(null); // Reset sort type
+    handleSortMenuClose();
   };
 
   if (loading) return <Typography variant="h6">Loading events...</Typography>;
@@ -142,7 +166,8 @@ const MainPage = () => {
                 borderRadius: 2,
                 backgroundColor: '#f9f9f9',
                 boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-              }}>
+              }}
+            >
               <Button
                 variant="contained"
                 color="primary"
@@ -157,13 +182,15 @@ const MainPage = () => {
                   alignItems: 'center',
                 }}
                 startIcon={<FilterAltIcon />}
-                onClick={toggleFilter}>
+                onClick={toggleFilter}
+              >
                 Filter Events
               </Button>
 
+              {/* Sort Button */}
               <Button
+                onClick={handleSortMenuOpen}
                 variant="contained"
-                color="primary"
                 sx={{
                   borderRadius: 5,
                   backgroundColor: '#BA0C2F',
@@ -173,12 +200,37 @@ const MainPage = () => {
                   },
                   display: 'flex',
                   alignItems: 'center',
+                  color: '#fff', // Ensures the text color is white
                 }}
-                onClick={toggleSort}>
-                <SortAscendingIcon sx={{ marginRight: 0.5 }} />
+                startIcon={<SortAscendingIcon />}
+                endIcon={<SortDescendingIcon />}
+              >
                 Sort
-                <SortDescendingIcon sx={{ marginLeft: 0.5 }} />
               </Button>
+
+              {/* Sorting Options Menu */}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleSortMenuClose}
+                sx={{
+                  '& .MuiPaper-root': {
+                    backgroundColor: '#f9f9f9', // Optional: light background for the menu
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+                  },
+                }}
+              >
+                <MenuItem onClick={() => toggleSort('date')}>
+                  Sort by Date {isAscending && sortType === 'date' ? '▲' : '▼'}
+                </MenuItem>
+                <MenuItem onClick={() => toggleSort('name')}>
+                  Sort by Name {isAscending && sortType === 'name' ? '▲' : '▼'}
+                </MenuItem>
+                <MenuItem onClick={clearSort}>
+                  Clear Sort
+                </MenuItem>
+              </Menu>
+
 
               <Button
                 variant="contained"
@@ -191,64 +243,67 @@ const MainPage = () => {
                   '&:hover': {
                     backgroundColor: '#36a420',
                   },
-                }}>
+                }}
+              >
                 Create Post
               </Button>
             </Box>
           </Grid>
+
           {isFilterVisible && (
-              <Grid item xs={12}>
-                <Box className="filter-section" sx={{ display: 'flex', gap: 2 }}>
-                  <input
-                    type="text"
-                    placeholder="Search by event name"
-                    name="name"
-                    value={filter.name}
-                    onChange={handleFilterChange}
-                    className="filter-input"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Search by username"
-                    name="username"
-                    value={filter.username}
-                    onChange={handleFilterChange}
-                    className="filter-input"
-                  />
-                  <input
-                    type="date"
-                    name="date"
-                    value={filter.date}
-                    onChange={handleFilterChange}
-                    className="filter-input"
-                  />
-                  <input
-                    type="time"
-                    name="time"
-                    value={filter.time}
-                    onChange={handleFilterChange}
-                    className="filter-input"
-                  />
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={clearFilter}
-                    sx={{
-                      borderRadius: 5,
-                      padding: '5px 5px',
-                      fontSize: '10px',
-                      borderColor: '#42b72a',
-                      color: '#42b72a',
-                      '&:hover': {
-                        backgroundColor: '#d3e6d3',
-                        borderColor: '#36a420',
-                      },
-                    }}>
-                    Clear Filter
-                  </Button>
-                </Box>
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <Box className="filter-section" sx={{ display: 'flex', gap: 2 }}>
+                <input
+                  type="text"
+                  placeholder="Search by event name"
+                  name="name"
+                  value={filter.name}
+                  onChange={handleFilterChange}
+                  className="filter-input"
+                />
+                <input
+                  type="text"
+                  placeholder="Search by username"
+                  name="username"
+                  value={filter.username}
+                  onChange={handleFilterChange}
+                  className="filter-input"
+                />
+                <input
+                  type="date"
+                  name="date"
+                  value={filter.date}
+                  onChange={handleFilterChange}
+                  className="filter-input"
+                />
+                <input
+                  type="time"
+                  name="time"
+                  value={filter.time}
+                  onChange={handleFilterChange}
+                  className="filter-input"
+                />
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={clearFilter}
+                  sx={{
+                    borderRadius: 5,
+                    padding: '5px 5px',
+                    fontSize: '10px',
+                    borderColor: '#42b72a',
+                    color: '#42b72a',
+                    '&:hover': {
+                      backgroundColor: '#d3e6d3',
+                      borderColor: '#36a420',
+                    },
+                  }}
+                >
+                  Clear Filter
+                </Button>
+              </Box>
+            </Grid>
+          )}
 
           <Grid item xs={12} sx={{ marginBottom: '20px' }}>
             <Grid container spacing={2} sx={{ paddingLeft: { xs: 0, md: 2, lg: 15 } }}>

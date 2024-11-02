@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 # Connect to MongoDB
 mongo_uri = os.getenv("MONGO_URI")
-#mongo_uri = "mongodb+srv://admin:admin123@cluster0.tfjwq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+mongo_uri = "mongodb+srv://admin:admin123@cluster0.tfjwq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 #client = MongoClient("mongodb+srv://admin:admin123@cluster0.tfjwq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 client = MongoClient(mongo_uri)
 # Access the 'events' database

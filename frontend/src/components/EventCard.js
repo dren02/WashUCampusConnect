@@ -9,16 +9,16 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import washuLogo from '../assets/washuLogo.png';
 
-
-const EventCard = ({ event, onDelete, showRSVP }) => {
+const EventCard = ({ event, onDelete }) => { // Removed showRSVP prop
   const { id, name, date, time, address, details_of_event, username, image_url } = event;
   const currUser = localStorage.getItem('username');
   const navigate = useNavigate();
   const displayedImage = image_url || washuLogo;
+
   const handleSave = async () => {
     try {
       const response = await axios.put(`http://localhost:8000/auth/${currUser}/save-event/`, {
-        eventId: id
+        eventId: id,
       });
       alert(response.data.message);
     } catch (error) {
@@ -27,23 +27,10 @@ const EventCard = ({ event, onDelete, showRSVP }) => {
     }
   };
 
-//RSVP
-  const handleRSVP = async () => {
-    try {
-      const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, {
-        username: currUser
-      });
-      alert(response.data.message || "RSVP successful!");
-    } catch (error) {
-      console.error("Error with RSVP:", error);
-      alert("An error occurred while RSVPing for the event.");
-    }
-  };
-
   const handleDelete = async () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this event? This action cannot be undone.");
     if (confirmDelete) {
-      onDelete(id);
+      await onDelete(id);
     }
   };
 
@@ -55,49 +42,53 @@ const EventCard = ({ event, onDelete, showRSVP }) => {
     navigate(`/event/${id}`);
   };
 
-  const handleUsernameClick = () => {
+  const handleUsernameClick = (e) => {
+    e.stopPropagation(); // Prevent the card click event
     navigate(`/profile/${username}`);
   };
 
   return (
     <Paper className="event-card">
       <div className="event-details" onClick={handleCardClick}>
-      <CardMedia
-  component="img"
-  sx={{
-    width: '100%',           
-    height: '150px',         
-    objectFit: 'contain',     
-    margin: '0 auto',         
-    borderRadius: '8px',      
-  }}
-  image={displayedImage}
-  alt="Event Image"
-/>
-
-
+        <CardMedia
+          component="img"
+          sx={{
+            width: '100%',           
+            height: '150px',         
+            objectFit: 'contain',     
+            margin: '0 auto',         
+            borderRadius: '8px',      
+          }}
+          image={displayedImage}
+          alt="Event"
+        />
         <h2 className="event-title"><strong>{name}</strong></h2>
       </div>
       <p className="event-user" onClick={handleUsernameClick}>{username}</p>
       <div className="event-details" onClick={handleCardClick}>
-        <p className="event-date"><CalendarMonthIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {date}</p>
-        <p className="event-time"><AccessTimeIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {time}</p>
-        <p className="event-location"><PlaceIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> {address}</p>
+        <p className="event-date">
+          <CalendarMonthIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
+          {date}
+        </p>
+        <p className="event-time">
+          <AccessTimeIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
+          {time}
+        </p>
+        <p className="event-location">
+          <PlaceIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
+          {address}
+        </p>
         <p className="event-description">{details_of_event}</p>
       </div>
-      <Button size="small" color="primary" onClick={handleSave} sx={{ marginTop: 'auto' }}> Save </Button>
-
-      {showRSVP && (
-        <Button size="small" color="success" onClick={handleRSVP} sx={{ marginTop: 'auto', marginLeft: '10px' }}> RSVP </Button>
-      )}
-
-      {/* Show Edit and Delete buttons only if the current user is the creator of the event */}
-      {username === currUser && (
-        <>
-          <Button size="small" color="error" onClick={handleDelete} sx={{ marginTop: 'auto', marginLeft: '10px' }}> Delete </Button>
-          <Button size="small" color="secondary" onClick={handleEdit} sx={{ marginTop: 'auto', marginLeft: '10px' }}> Edit </Button>
-        </>
-      )}
+      <div style={{ display: 'flex', marginTop: 'auto' }}>
+        <Button size="small" color="primary" onClick={handleSave}> Save </Button>
+        {username === currUser && (
+          <>
+            <Button size="small" color="error" onClick={handleDelete} sx={{ marginLeft: '10px' }}> Delete </Button>
+            <Button size="small" color="secondary" onClick={handleEdit} sx={{ marginLeft: '10px' }}> Edit </Button>
+          </>
+        )}
+      </div>
     </Paper>
   );
 };

@@ -19,6 +19,7 @@ const MainPage = () => {
   const [isPostModalVisible, setIsPostModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const username = localStorage.getItem('username') || 'Guest';
+  const role = localStorage.getItem('role');
   const [isAscending, setIsAscending] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null); // Sort For controlling the menu
   const [sortType, setSortType] = useState('date'); //sort
@@ -244,6 +245,7 @@ const MainPage = () => {
                     backgroundColor: '#36a420',
                   },
                 }}
+                disabled={role === 'event_attendee'} // Disable if role is 'event_attendee'
               >
                 Create Post
               </Button>

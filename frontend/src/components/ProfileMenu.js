@@ -23,6 +23,7 @@ const ProfileMenu = ({ letter }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [newPassword, setNewPassword] = React.useState('');
+    const loggedInUser = localStorage.getItem('username')
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
@@ -34,7 +35,7 @@ const ProfileMenu = ({ letter }) => {
     };
 
     const handleViewProfile = () => {
-        navigate('/profile');
+        navigate(`/profile/${loggedInUser}`);
     };
 
     const handleChangePassword = () => {

@@ -266,10 +266,12 @@ function ProfilePage() {
             {/* <ProfileMenu letter={username[0]} />  */}
             <Typography variant="h3">{username || loggedInUser}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
-              <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> {/* Display the aboutMe state */}
-              <MenuItem onClick={handleEditAbout}>
-                <EditIcon fontSize="small" />
-              </MenuItem>
+              <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> 
+                {loggedInUser === username && (
+                  <MenuItem onClick={handleEditAbout}>
+                    <EditIcon fontSize="small" />
+                  </MenuItem>
+                )}
             </Box>
 
             {isEditModalVisible && (

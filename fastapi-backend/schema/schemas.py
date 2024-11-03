@@ -21,6 +21,7 @@ def user_serializer(user) -> dict:
         "password": user["password"],
         "email": user["email"],
         "savedEvents": user.get('savedEvents', []),
+        "role": user.get("role", "event_creator"),
         "about": user.get('about', "About section is empty")
     }
 

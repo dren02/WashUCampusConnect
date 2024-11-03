@@ -33,8 +33,9 @@ function ProfilePage() {
   const [savedEventIds, setSavedEventIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedTab, setSelectedTab] = useState('myposts');
+  const [selectedTab, setSelectedTab] = useState('savedposts');
   const loggedInUser = localStorage.getItem('username') || 'Guest';
+  const role = localStorage.getItem('role');
   const [aboutMe, setAboutMe] = useState('');
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -290,7 +291,10 @@ function ProfilePage() {
               exclusive
               onChange={handleTabChange}
               aria-label="Platform">
-              <ToggleButton value="myposts" >My Posts</ToggleButton>
+              <ToggleButton 
+              value="myposts"
+              disabled={role === 'event_attendee'}
+               >My Posts</ToggleButton>
               <ToggleButton value="savedposts">&nbsp;&nbsp;Saved&nbsp;&nbsp;</ToggleButton>
             </ToggleButtonGroup>
           </Item>

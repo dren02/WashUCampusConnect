@@ -76,7 +76,7 @@ async def signup(user: User):
     # Hash the password and store the user in the users collection
     hashed_password = hash_password(user.password)
     email = user.email
-    users_collection.insert_one({"username": user.username, "password": hashed_password, "email": email})
+    users_collection.insert_one({"username": user.username, "password": hashed_password, "email": email, "role": user.role})
     return {"message": "User created successfully"}
 
 # Login and Token generation
@@ -88,7 +88,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     
     # Create JWT token
     access_token = create_access_token(data={"sub": user["username"]})
-    return {"access_token": access_token, "token_type": "bearer", "username": user["username"]}
+    return {"access_token": access_token, "token_type": "bearer", "username": user["username"], "role": user["role"]}
 
 # Protect routes with token
 @router.get("/protected/")

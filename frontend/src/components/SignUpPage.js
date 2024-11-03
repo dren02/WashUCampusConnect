@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import axios from 'axios';  // Import axios for API requests
+import axios from 'axios';
 import '../styles/SignUpPage.css';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');  // You can store this for future use if you handle email later
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -16,34 +17,35 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
 
+    if (!role) {
+      alert("Please select a role!");
+      return;
+    }
+
     try {
-      // Make a POST request to the FastAPI sign-up endpoint
       await axios.post('http://localhost:8000/auth/signup/', {
         username,
         password,
         email,
+        role,
       });
-      // If the sign-up is successful
       setSuccess('Account created successfully! Redirecting to login page...');
       setError('');
       setTimeout(() => {
         navigate('/login');
       }, 1800);
     } catch (error) {
-      // Handle error (e.g., username already exists)
       console.error('Error during sign-up:', error);
       if (error.response && error.response.data && error.response.data.detail) {
         setError(`Failed to create account: ${error.response.data.detail}`);
       } else {
         setError('Failed to create account: An unknown error occurred.');
       }
-      //setError('Failed to create account. {print the error message here}');
       setSuccess('');
     }
   };
@@ -92,8 +94,35 @@ const SignUp = () => {
             required
           />
         </div>
-        {error && <p className="error-message">{error}</p>} {/* Display error message */}
-        {success && <p className="success-message">{success}</p>} {/* Display success message */}
+
+        <div className="form-group">
+          <label className="form-label">Select Role:</label>
+          <div className="radio-group">
+            <label className="radio-option">
+              <input
+                type="radio"
+                value="event_creator"
+                checked={role === 'event_creator'}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              />
+              <span>Event Creator</span>
+            </label>
+            <label className="radio-option">
+              <input
+                type="radio"
+                value="event_attendee"
+                checked={role === 'event_attendee'}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              />
+              <span>Event Attendee</span>
+            </label>
+          </div>
+        </div>
+        {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
+
         <button type="submit" className="signup-button">Sign Up</button>
       </form>
       <p>Already have an account? <a href="/login">Log In</a></p>

@@ -153,6 +153,7 @@ const EventDetails = () => {
           </Paper>
 
           <Box sx={{ display: 'flex', gap: 2, marginY: 3 }}>
+          {author != currUser && (
             <Button
               variant="outlined"
               onClick={handleRSVP}
@@ -161,6 +162,7 @@ const EventDetails = () => {
             >
               {loadingRSVP ? "Processing..." : (hasRSVPed ? "Remove RSVP" : "RSVP")}
             </Button>
+          )}
             {author === currUser && (
               <IconButton onClick={handleEdit} sx={{ color: '#BA0C2F' }}>
                 <EditIcon />
@@ -203,7 +205,7 @@ const EventDetails = () => {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
             />
-            <Button variant="contained" onClick={handleCommentSubmit}>Submit</Button>
+            <Button variant="contained" onClick={handleCommentSubmit} sx={{ backgroundColor: 'rgb(186, 12, 47)' }}>Submit</Button>
           </Box>
         </Box>
 

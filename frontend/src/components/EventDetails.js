@@ -21,7 +21,7 @@ const EventDetails = () => {
   const currUser = localStorage.getItem('username');
   const [author, setAuthor] = useState('');
   const [hasRSVPed, setHasRSVPed] = useState(false);
-  const [rsvps, setRsvps] = useState([]);  // Change here
+  const [rsvps, setRsvps] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loadingRSVP, setLoadingRSVP] = useState(false);
@@ -33,9 +33,9 @@ const EventDetails = () => {
         const response = await axios.get(`http://localhost:8000/events/${id}`);
         setEvent(response.data);
         setAuthor(response.data.username);
-        setRsvps(response.data.rsvps || []); // Change here
+        setRsvps(response.data.rsvps || []);
         setComments(response.data.comments || []);
-        setHasRSVPed(response.data.rsvps?.includes(currUser)); // Change here
+        setHasRSVPed(response.data.rsvps?.includes(currUser));
       } catch (err) {
         setError('Failed to fetch event details.');
         console.error("Fetch Error:", err);
@@ -50,26 +50,24 @@ const EventDetails = () => {
     setLoadingRSVP(true);
     try {
       const formData = new FormData();
-      formData.append('username', currUser); // Append the username to form data
-  
+      formData.append('username', currUser);
+
       if (hasRSVPed) {
-        // User has already RSVPed, so we want to remove their RSVP
         const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, formData, {
           data: { username: currUser },
         });
         setSnackbarMessage(response.data.message || 'RSVP removed successfully!');
-        setRsvps(prev => prev.filter(user => user !== currUser)); // Remove user from RSVP list
-        setHasRSVPed(false); // Update state to reflect that the user has not RSVPed
+        setRsvps(prev => prev.filter(user => user !== currUser));
+        setHasRSVPed(false);
       } else {
-        // User has not RSVPed yet, so we want to add their RSVP
         const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data', // Set the content type for form data
+            'Content-Type': 'multipart/form-data',
           },
         });
         setSnackbarMessage(response.data.message || 'RSVP successful!');
-        setRsvps(prev => [...prev, currUser]); // Add user to RSVP list
-        setHasRSVPed(true); // Update state to reflect that the user has RSVPed
+        setRsvps(prev => [...prev, currUser]);
+        setHasRSVPed(true);
       }
       setSnackbarOpen(true);
     } catch (error) {
@@ -80,14 +78,22 @@ const EventDetails = () => {
       setLoadingRSVP(false);
     }
   };
+
   const handleCommentSubmit = async () => {
     if (newComment.trim()) {
       try {
-        await axios.post(`http://localhost:8000/events/${id}/comment`, {
-          username: currUser,
-          comment: newComment,
+        const formData = new FormData();
+        formData.append('username', currUser);
+        formData.append('comment', newComment);
+
+        await axios.post(`http://localhost:8000/events/${id}/comment`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
-        setComments(prev => [...prev, { username: currUser, comment: newComment }]);
+
+        // Update comments state
+        setComments(prev => [...prev, `${currUser}: ${newComment}`]);
         setNewComment('');
       } catch (error) {
         console.error("Comment Error:", error);
@@ -107,7 +113,7 @@ const EventDetails = () => {
   const displayedImage = event.image_url || washuLogo;
 
   return (
-    <Box sx={{ paddingX: 5, paddingY: 4, minHeight: '100vh', backgroundColor: '#f9f9f9 ', color: '#333' }}>
+    <Box sx={{ paddingX: 5, paddingY: 4, minHeight: '100vh', backgroundColor: '#f9f9f9', color: '#333' }}>
       <CardMedia
         component="img"
         sx={{
@@ -163,12 +169,21 @@ const EventDetails = () => {
           </Box>
 
           <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 1, color: '#333' }}>Comments</Typography>
-          <Paper elevation={1} sx={{ maxHeight: 200, overflow: 'auto', padding: 2, marginBottom: 2, backgroundColor: '#f9fafb' }}>
+          <Paper
+            elevation={1}
+            sx={{
+              maxHeight: 200,
+              overflow: 'auto',
+              padding: 2,
+              marginBottom: 2,
+              backgroundColor: '#f9fafb',
+            }}
+          >
             {comments.length > 0 ? (
               comments.map((comment, index) => (
                 <Box key={index} sx={{ marginBottom: 1 }}>
                   <Typography variant="body2" sx={{ color: '#444' }}>
-                    <strong>{comment.username}:</strong> {comment.comment}
+                    {comment}
                   </Typography>
                   <Divider sx={{ marginY: 1 }} />
                 </Box>
@@ -194,19 +209,13 @@ const EventDetails = () => {
 
         <Box sx={{ flex: 1 }}>
           <Paper elevation={1} sx={{ padding: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>RSVP'd Users</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>RSVPs</Typography>
             <List>
-              {rsvps.length > 0 ? (
-                rsvps.map((user, index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={user} />
-                  </ListItem>
-                ))
-              ) : (
-                <ListItem>
-                  <ListItemText primary="No users have RSVP'd yet." />
+              {rsvps.map((user, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={user} />
                 </ListItem>
-              )}
+              ))}
             </List>
           </Paper>
         </Box>

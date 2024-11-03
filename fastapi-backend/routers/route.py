@@ -56,7 +56,8 @@ async def create_event(
         "address": address,
         "username": username,
         "image_url": image_url,
-        "rsvps": []  # Initialize RSVPs as an empty list
+        "rsvps": [],  # Initialize RSVPs as an empty list
+        "comments": []  # Initialize comments as an empty list
     }
     collection_name.insert_one(event_data)
     return event_serializer(event_data)
@@ -83,17 +84,20 @@ async def add_rsvp(id: str, username: str = Form(...)):
         )
         return {"message": "RSVP successful!"}
 
-"""
-@router.delete("/events/{event_id}/rsvp")
-async def remove_rsvp(event_id: int, username: str):
+# Endpoint to add a comment to an event
+@router.post("/{id}/comment")
+async def add_comment(id: str, username: str = Form(...), comment: str = Form(...)):
     event = collection_name.find_one({"_id": ObjectId(id)})
-    if username not in event.rsvps:
-        raise HTTPException(status_code=400, detail="User has not RSVPed to this event")
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
 
-    collection_name.update_one({"_id": ObjectId(id)}, {"$pull": {"rsvps": username}})
-    event["rsvps"].remove(username)
-    return {"message": f"RSVP removed for {username}"}
-"""
+    # Append the new comment to the comments list
+    collection_name.update_one(
+        {"_id": ObjectId(id)},
+        {"$push": {"comments": f"{username}: {comment}"}}  # Add the new comment
+    )
+    return {"message": "Comment added successfully!"}
+
 
 # Put request methods
 @router.put("/{id}")
@@ -106,7 +110,8 @@ async def put_event(
     address: str = Form(...),
     username: str = Form(...),
     image: UploadFile = File(None),  # Optional image upload for edit
-    rsvps: list[str] = Form(None)  # Optional RSVPs list
+    rsvps: list[str] = Form(None),  # Optional RSVPs list
+    comments: list[str] = Form(None)  # Optional comments list
 ):
     # Handle optional image update
     image_url = None
@@ -131,6 +136,9 @@ async def put_event(
         event_data["image_url"] = image_url  # Only update image URL if a new image is uploaded
     if rsvps is not None:
         event_data["rsvps"] = rsvps  # Update the RSVP list if provided
+    if comments is not None:
+        event_data["comments"] = comments
+    
 
     # Update the event document
     updated_event = collection_name.find_one_and_update({"_id": ObjectId(id)}, {"$set": event_data}, return_document=True)

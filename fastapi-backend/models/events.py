@@ -10,3 +10,4 @@ class Event(BaseModel):
     username: str 
     image_url: str = None
     rsvps: List[str] = []
+    comments: List[str] = []

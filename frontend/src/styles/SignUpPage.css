@@ -11,7 +11,7 @@
   animation: gradientShift 10s ease infinite;
 }
 
-.signup-container h1 {
+.signup-container h1 { 
   color: #BA0C2F; 
   margin-bottom: 20px;
 }
@@ -65,4 +65,17 @@
   .signup-form {
       width: 90%; 
   }
+}
+.radio-group {
+  display: flex;
+  gap: 1.5rem;  /* Spacing between the options */
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+}
+
+.radio-option input[type="radio"] {
+  margin-right: 0.5rem;  /* Space between the radio button and the text */
 }

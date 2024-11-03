@@ -26,9 +26,11 @@ const LoginPage = () => {
         },
       });
 
-      const { access_token, token_type, username: fetchedUsername } = response.data;
+      const { access_token, token_type, username: fetchedUsername, role:fetchedRole} = response.data;
       localStorage.setItem('username', fetchedUsername);
       localStorage.setItem('token', access_token);
+      localStorage.setItem('role', fetchedRole);
+
       console.log('Logged in successfully:', fetchedUsername);
 
       navigate('/main');

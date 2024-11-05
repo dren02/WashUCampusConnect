@@ -68,12 +68,14 @@
 }
 .radio-group {
   display: flex;
-  gap: 1.5rem;  /* Spacing between the options */
+  justify-content: space-around;
+  gap: 1.5rem;  
 }
 
 .radio-option {
   display: flex;
   align-items: center;
+  text-align: center;
 }
 
 .radio-option input[type="radio"] {

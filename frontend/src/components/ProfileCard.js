@@ -87,9 +87,11 @@ const ProfileCard = ({ event, onDelete }) => {
                 </CardContent>
             </CardActionArea>
             <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingRight: 2 }}>
+                {currUser != username && (
                 <Button size="small" color="primary" onClick={(e) => { e.stopPropagation(); handleSave(); }} sx={{ marginBottom: 6, marginTop: 8 }}>
                     Save
                 </Button>
+                 )} 
                 {currUser === username && (
                     <IconButton
                         aria-label="more"

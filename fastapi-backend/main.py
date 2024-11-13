@@ -8,7 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 app = FastAPI()
-
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 app.add_middleware(
     CORSMiddleware,

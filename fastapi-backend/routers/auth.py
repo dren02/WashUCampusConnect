@@ -47,6 +47,9 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 class SaveEventRequest(BaseModel):
     eventId: str 
 
+class RemoveEventRequest(BaseModel):
+    eventId: str 
+   
 @router.delete("/{username}")
 async def delete_user(username: str):
     result = users_collection.find_one_and_delete({"username": username})
@@ -116,6 +119,22 @@ async def save_event(username: str, save_event_request: SaveEventRequest):
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "Event saved successfully", "savedEvents": result['savedEvents']}
 
+@router.delete("/{username}/unsave-event/")
+async def unsave_event(username: str, request: RemoveEventRequest):
+    # Find the user document
+    user = users_collection.find_one({"username": username})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Check if the event is in the savedEvents list
+    if request.eventId not in user.get("savedEvents", []):
+        raise HTTPException(status_code=404, detail="Event not found in saved events")
+    # Remove the event from the savedEvents list
+    users_collection.update_one(
+        {"username": username},
+        {"$pull": {"savedEvents": request.eventId}}
+    )
+    return {"message": "Event unsaved successfully"}
 
 @router.put("/{username}/update-about/")
 async def update_about(username: str, about: str = Body(..., media_type="text/plain")):

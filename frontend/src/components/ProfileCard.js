@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -21,34 +21,54 @@ const ITEM_HEIGHT = 45;
 
 const options = ['Edit', 'Delete'];
 
-const ProfileCard = ({ event, onDelete }) => {
+const ProfileCard = ({ event, onDelete, onUnsave, selectedTab }) => {
     const { id, name, date, time, address, details_of_event, username, image_url } = event;
     const currUser = localStorage.getItem('username');
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
     const displayedImage = image_url || washuLogo;
+    const [isSaved, setIsSaved] = useState(true);
 
     const handleDropdown = (event) => setAnchorEl(event.currentTarget);
+
     const handleDeleteOption = async () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this event? This action cannot be undone.");
         if (confirmDelete) {
             onDelete(id);
         }
     };
+
     const handleClose = () => setAnchorEl(null);
+
     const handleSave = async () => {
         try {
             const response = await axios.put(`http://localhost:8000/auth/${currUser}/save-event/`, {
                 eventId: id
             });
             alert(response.data.message);
+            setIsSaved(true)
         } catch (error) {
             console.error("Error saving event:", error);
             alert("An error occurred while saving the event.");
         }
     };
+
+    const handleUnsave = async () => {
+        try {
+            await axios.delete(`http://localhost:8000/auth/${currUser}/unsave-event/`, {
+                data: { eventId: id }
+            });
+            setIsSaved(false);
+            onUnsave(selectedTab);
+        } catch (error) {
+            console.error("Error unsaving event:", error);
+            alert("An error occurred while unsaving the event.");
+        }
+    };
+
     const handleEdit = () => navigate(`/edit-event/${id}`);
+
     const handleCardClick = () => navigate(`/event/${id}`);
 
     return (
@@ -88,8 +108,8 @@ const ProfileCard = ({ event, onDelete }) => {
             </CardActionArea>
             <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingRight: 2 }}>
                 {currUser != username && (
-                <Button size="small" color="primary" onClick={(e) => { e.stopPropagation(); handleSave(); }} sx={{ marginBottom: 6, marginTop: 8 }}>
-                    Save
+                <Button size="small" color="primary" onClick={(e) => { e.stopPropagation(); isSaved ? handleUnsave() : handleSave(); }} sx={{ marginBottom: 6, marginTop: 8 }}>
+                    {isSaved ? 'Unsave' : 'Save'}
                 </Button>
                  )} 
                 {currUser === username && (

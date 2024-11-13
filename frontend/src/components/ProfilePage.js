@@ -316,6 +316,8 @@ function ProfilePage() {
                     key={event.id}
                     event={event}
                     onDelete={handleDeleteEvent}
+                    onUnsave={fetchEvents} 
+                    selectedTab={selectedTab}
                   />
                 ))
               ) : (

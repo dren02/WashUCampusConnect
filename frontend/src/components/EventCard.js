@@ -84,7 +84,9 @@ const EventCard = ({ event, onDelete }) => { // Removed showRSVP prop
       </CardContent>
       </div>
       <CardActions>
+      {currUser != username && (
         <Button size="small" onClick={handleSave}>Save</Button>
+      )}
         {username === currUser && (
           <>
             <Button size="small" color="error" onClick={handleDelete} sx={{ marginLeft: '10px' }}> Delete </Button>

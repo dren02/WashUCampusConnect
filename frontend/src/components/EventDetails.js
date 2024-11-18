@@ -124,6 +124,10 @@ const EventDetails = () => {
 
   const displayedImage = event.image_url || washuLogo;
 
+  const handleClickUsername = (username) => {
+    navigate(`/profile/${username}`);
+  }
+
   return (
     <Box sx={{ paddingX: 5, paddingY: 4, minHeight: '100vh', backgroundColor: '#f9f9f9', color: '#333' }}>
       <CardMedia
@@ -196,17 +200,17 @@ const EventDetails = () => {
           >
             {comments.length > 0 ? (
             comments.map((comment, index) => {
-              // Extract the author and the comment content
-              const [author, ...commentParts] = comment.split(':');
+              // Extract the comments' author and its content
+              const [commentAuthor, ...commentParts] = comment.split(':');
               const commentText = commentParts.join(':').trim(); 
 
               return (
                 <Box key={index} sx={{ marginBottom: 1 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body2" sx={{ color: '#444' }} onClick={handleClickUsername}>
-                      <strong>{author}:</strong> {commentText}
+                    <Typography variant="body2" sx={{ color: '#444',  cursor: 'pointer', '&:hover': {textDecoration: 'underline'}}} onClick={() => handleClickUsername(commentAuthor)}>
+                      <strong>{commentAuthor}:</strong> {commentText}
                     </Typography>
-                    {author === currUser && (
+                    {commentAuthor === currUser && (
                       <IconButton onClick={() => handleDeleteComment(index)}>
                         <DeleteOutlineIcon />
                       </IconButton>

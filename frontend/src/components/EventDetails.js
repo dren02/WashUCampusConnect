@@ -195,19 +195,27 @@ const EventDetails = () => {
             }}
           >
             {comments.length > 0 ? (
-              comments.map((comment, index) => (
+            comments.map((comment, index) => {
+              // Extract the author and the comment content
+              const [author, ...commentParts] = comment.split(':');
+              const commentText = commentParts.join(':').trim(); 
+
+              return (
                 <Box key={index} sx={{ marginBottom: 1 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body2" sx={{ color: '#444' }}>
-                      {comment}
+                    <Typography variant="body2" sx={{ color: '#444' }} onClick={handleClickUsername}>
+                      <strong>{author}:</strong> {commentText}
                     </Typography>
-                    <IconButton onClick={() => handleDeleteComment(index)} >
-                      <DeleteOutlineIcon /> 
-                    </IconButton>
+                    {author === currUser && (
+                      <IconButton onClick={() => handleDeleteComment(index)}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    )}
                   </Box>
                   <Divider sx={{ marginY: 1 }} />
                 </Box>
-              ))
+              );
+            })
             ) : (
               <Typography variant="body2" color="textSecondary">
                 No comments yet. Be the first to comment!

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import EventCard from '../components/EventCard';
 import MakePost from '../components/makePost';
 import '../styles/MainPage.css';
@@ -31,6 +32,22 @@ const MainPage = () => {
     time: '',
     name: '' // New field for event name search
   });
+
+  const navigate = useNavigate(); // Initialize navigate function for navigation
+
+  // Authentication check
+  useEffect(() => {
+    const checkAuthentication = () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login'); // Redirect to login if no token
+      }
+    };
+    checkAuthentication();
+  }, [navigate]);
+
+
+
 
   const fetchEvents = async () => {
     try {

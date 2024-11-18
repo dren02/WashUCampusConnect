@@ -10,6 +10,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import '../styles/EventDetails.css';
 import washuLogo from '../assets/washuLogo.png';
 import EditIcon from '@mui/icons-material/Edit';
+import '../styles/EventDetails.css';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -25,6 +27,7 @@ const EventDetails = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loadingRSVP, setLoadingRSVP] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(false); // refetch event after a comment is deleted
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,7 +47,7 @@ const EventDetails = () => {
       }
     };
     fetchEvent();
-  }, [id, currUser]);
+  }, [id, currUser, refreshFlag]);
 
   const handleRSVP = async () => {
     setLoadingRSVP(true);
@@ -106,6 +109,15 @@ const EventDetails = () => {
   const handleEdit = () => navigate(`/edit-event/${id}`);
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
+  const handleDeleteComment = async (index) => {
+    try {
+      await axios.delete(`http://localhost:8000/events/${id}/comments/${index}`);
+      setRefreshFlag((prev) => !prev);
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  }
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!event) return <p>No event found.</p>;
@@ -153,7 +165,7 @@ const EventDetails = () => {
           </Paper>
 
           <Box sx={{ display: 'flex', gap: 2, marginY: 3 }}>
-          {author != currUser && (
+          {author !== currUser && (
             <Button
               variant="outlined"
               onClick={handleRSVP}
@@ -166,6 +178,7 @@ const EventDetails = () => {
             {author === currUser && (
               <IconButton onClick={handleEdit} sx={{ color: '#BA0C2F' }}>
                 <EditIcon />
+                <Typography>&nbsp;Edit</Typography>
               </IconButton>
             )}
           </Box>
@@ -184,9 +197,14 @@ const EventDetails = () => {
             {comments.length > 0 ? (
               comments.map((comment, index) => (
                 <Box key={index} sx={{ marginBottom: 1 }}>
-                  <Typography variant="body2" sx={{ color: '#444' }}>
-                    {comment}
-                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ color: '#444' }}>
+                      {comment}
+                    </Typography>
+                    <IconButton onClick={() => handleDeleteComment(index)} >
+                      <DeleteOutlineIcon /> 
+                    </IconButton>
+                  </Box>
                   <Divider sx={{ marginY: 1 }} />
                 </Box>
               ))

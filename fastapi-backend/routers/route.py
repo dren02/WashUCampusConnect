@@ -98,6 +98,24 @@ async def add_comment(id: str, username: str = Form(...), comment: str = Form(..
     )
     return {"message": "Comment added successfully!"}
 
+@router.delete("/{id}/comments/{index}")
+async def delete_comment(id: str, index: int):
+    event = collection_name.find_one({"_id": ObjectId(id)})
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+    comments = event.get("comments", [])
+    if index < 0 or index >= len(comments):
+        raise HTTPException(status_code=400, detail="Invalid comment index")
+    try:
+        # Remove the comment at the specified index
+        removed_comment = comments.pop(index)
+        collection_name.update_one(
+            {"_id": ObjectId(id)},
+            {"$set": {"comments": comments}}
+        )
+        return {"message": f"Comment '{removed_comment}' deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Put request methods
 @router.put("/{id}")

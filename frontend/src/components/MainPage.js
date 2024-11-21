@@ -317,7 +317,7 @@ const MainPage = () => {
                     showRSVP={true}
                     sx={{
                       maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
-                      margin: '0 auto'
+                      margin: '0 auto', height: '350px', display: 'flex', flexDirection: 'column'
                     }}
                   />
                 </Grid>

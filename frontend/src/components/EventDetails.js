@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Box, Typography, Paper, Button, TextField, List, ListItem, ListItemText, Divider, CardMedia, IconButton, Snackbar
+  Box, Typography, Paper, Button, TextField, List, ListItem, ListItemText, Divider, CardMedia, IconButton, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, Switch, FormControlLabel,
 } from '@mui/material';
 import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -25,7 +25,10 @@ const EventDetails = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loadingRSVP, setLoadingRSVP] = useState(false);
+  const [rsvpModalOpen, setRsvpModalOpen] = useState(false); // State for RSVP modal
+  const [optIntoNotifications, setOptIntoNotifications] = useState(false); // State for notifications
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -46,11 +49,12 @@ const EventDetails = () => {
     fetchEvent();
   }, [id, currUser]);
 
-  const handleRSVP = async () => {
+  const handleRSVP = async (isRSVPing, optIntoNotifications) => {
     setLoadingRSVP(true);
     try {
       const formData = new FormData();
       formData.append('username', currUser);
+      formData.append('notifications', optIntoNotifications);
 
       if (hasRSVPed) {
         const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, formData, {
@@ -101,6 +105,20 @@ const EventDetails = () => {
         setSnackbarOpen(true);
       }
     }
+  };
+
+  const handleRSVPClick = () => {
+    setRsvpModalOpen(true);
+  };
+
+  const handleRSVPConfirm = () => {
+    // Call handleRSVP with the appropriate parameters
+    handleRSVP(true, optIntoNotifications);
+    setRsvpModalOpen(false); // Close the modal after confirming
+  };
+
+  const handleModalClose = () => {
+    setRsvpModalOpen(false);
   };
 
   const handleEdit = () => navigate(`/edit-event/${id}`);
@@ -156,13 +174,40 @@ const EventDetails = () => {
           {author != currUser && (
             <Button
               variant="outlined"
-              onClick={handleRSVP}
+              onClick={handleRSVPClick}
               disabled={loadingRSVP}
               sx={{ width: '150px', color: '#BA0C2F', borderColor: '#BA0C2F' }}
             >
               {loadingRSVP ? "Processing..." : (hasRSVPed ? "Remove RSVP" : "RSVP")}
             </Button>
           )}
+{/* RSVP Modal */}
+<Dialog open={rsvpModalOpen} onClose={handleModalClose}>
+        <DialogTitle>RSVP to Event</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ marginBottom: 2 }}>
+            Would you like to RSVP to this event? You can also opt into notifications to stay updated.
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={optIntoNotifications}
+                onChange={() => setOptIntoNotifications(!optIntoNotifications)}
+              />
+            }
+            label="Opt into notifications"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModalClose} sx={{ color: '#555' }}>
+            Cancel
+          </Button>
+          <Button onClick={handleRSVPConfirm} variant="contained" sx={{ backgroundColor: '#BA0C2F' }}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
             {author === currUser && (
               <IconButton onClick={handleEdit} sx={{ color: '#BA0C2F' }}>
                 <EditIcon />

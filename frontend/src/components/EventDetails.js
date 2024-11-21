@@ -10,6 +10,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import '../styles/EventDetails.css';
 import washuLogo from '../assets/washuLogo.png';
 import EditIcon from '@mui/icons-material/Edit';
+import '../styles/EventDetails.css';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -27,6 +29,7 @@ const EventDetails = () => {
   const [loadingRSVP, setLoadingRSVP] = useState(false);
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false); // State for RSVP modal
   const [optIntoNotifications, setOptIntoNotifications] = useState(false); // State for notifications
+  const [refreshFlag, setRefreshFlag] = useState(false); // refetch event after a comment is deleted
   const navigate = useNavigate();
   
 
@@ -47,7 +50,7 @@ const EventDetails = () => {
       }
     };
     fetchEvent();
-  }, [id, currUser]);
+  }, [id, currUser, refreshFlag]);
 
   const handleRSVP = async (isRSVPing, optIntoNotifications) => {
     setLoadingRSVP(true);
@@ -124,11 +127,24 @@ const EventDetails = () => {
   const handleEdit = () => navigate(`/edit-event/${id}`);
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
+  const handleDeleteComment = async (index) => {
+    try {
+      await axios.delete(`http://localhost:8000/events/${id}/comments/${index}`);
+      setRefreshFlag((prev) => !prev);
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  }
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!event) return <p>No event found.</p>;
 
   const displayedImage = event.image_url || washuLogo;
+
+  const handleClickUsername = (username) => {
+    navigate(`/profile/${username}`);
+  }
 
   return (
     <Box sx={{ paddingX: 5, paddingY: 4, minHeight: '100vh', backgroundColor: '#f9f9f9', color: '#333' }}>
@@ -171,7 +187,7 @@ const EventDetails = () => {
           </Paper>
 
           <Box sx={{ display: 'flex', gap: 2, marginY: 3 }}>
-          {author != currUser && (
+          {author !== currUser && (
             <Button
               variant="outlined"
               onClick={handleRSVPClick}
@@ -211,6 +227,7 @@ const EventDetails = () => {
             {author === currUser && (
               <IconButton onClick={handleEdit} sx={{ color: '#BA0C2F' }}>
                 <EditIcon />
+                <Typography>&nbsp;Edit</Typography>
               </IconButton>
             )}
           </Box>
@@ -227,14 +244,27 @@ const EventDetails = () => {
             }}
           >
             {comments.length > 0 ? (
-              comments.map((comment, index) => (
+            comments.map((comment, index) => {
+              // Extract the comments' author and its content
+              const [commentAuthor, ...commentParts] = comment.split(':');
+              const commentText = commentParts.join(':').trim(); 
+
+              return (
                 <Box key={index} sx={{ marginBottom: 1 }}>
-                  <Typography variant="body2" sx={{ color: '#444' }}>
-                    {comment}
-                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ color: '#444',  cursor: 'pointer', '&:hover': {textDecoration: 'underline'}}} onClick={() => handleClickUsername(commentAuthor)}>
+                      <strong>{commentAuthor}:</strong> {commentText}
+                    </Typography>
+                    {commentAuthor === currUser && (
+                      <IconButton onClick={() => handleDeleteComment(index)}>
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    )}
+                  </Box>
                   <Divider sx={{ marginY: 1 }} />
                 </Box>
-              ))
+              );
+            })
             ) : (
               <Typography variant="body2" color="textSecondary">
                 No comments yet. Be the first to comment!

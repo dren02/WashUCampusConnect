@@ -17,6 +17,10 @@ function ResponsiveAppBar() {
   const handleFeaturedEventsClick = () => {
     navigate('/featured-events');
   }
+   
+  const handleViewCalendar = () => {
+    navigate('/calendar')
+  }
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'white', color: '#BA0C2F', borderBottom: '1px solid #D3D3D3' }}>
@@ -61,6 +65,11 @@ function ResponsiveAppBar() {
           </Link>
           <Box sx={{ flexGrow: 1 }} /> {/* This Box pushes the content to the right */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/calendar" style={{ textDecoration: 'none', color: '#BA0C2F', marginRight: '20px' }}>
+              <Typography variant="body1" sx={{ fontWeight: 600 }} onClick={handleViewCalendar} >
+                Calendar
+              </Typography>
+            </Link>
             <Link to="/featured-events" style={{ textDecoration: 'none', color: '#BA0C2F', marginRight: '20px' }}>
               <Typography variant="body1" sx={{ fontWeight: 600 }} onClick={handleFeaturedEventsClick} >
                 Featured Events

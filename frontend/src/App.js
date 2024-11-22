@@ -10,6 +10,7 @@ import ResetPassword from './components/ResetPassword';
 import EventDetails from './components/EventDetails';
 import EditEvent from './components/EditEvent'; 
 import FeaturedEvents from './components/FeaturedEvents';
+import Calendar from './calendar'
 import './styles/App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/event/:id" element={<EventDetails />} /> 
         <Route path="/edit-event/:id" element={<EditEvent />} />
         <Route path="/featured-events" element={<FeaturedEvents />} />
+        <Route path="/calendar" element={<Calendar />} />
       </Routes>
     </Router>
   );

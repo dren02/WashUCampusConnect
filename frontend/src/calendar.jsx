@@ -1,84 +1,106 @@
-import React, { useState } from 'react'
-import { formatDate } from '@fullcalendar/core'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
-import Navbar from './components/Navbar'
+import React, { useState, useEffect } from 'react';
+import { formatDate } from '@fullcalendar/core';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid'; 
+import interactionPlugin from '@fullcalendar/interaction'; 
+import Navbar from './components/Navbar';
 import './styles/calendar.css';
+import { fetchDisplayEvents } from './calendar-events';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import { Typography } from '@mui/material';
 
 export default function Calendar() {
-  const [weekendsVisible, setWeekendsVisible] = useState(true)
-  const [currentEvents, setCurrentEvents] = useState([])
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [weekendsVisible, setWeekendsVisible] = React.useState(true);
+
+  // Fetch savedPosts when the component mounts
+  useEffect(() => {
+    const loadEvents = async () => {
+      const { savedPosts } = await fetchDisplayEvents();
+      setCalendarEvents(savedPosts);
+      console.log("here")
+      console.log(savedPosts)
+    };
+    loadEvents();
+  }, []);
 
   function handleWeekendsToggle() {
-    setWeekendsVisible(!weekendsVisible)
+    setWeekendsVisible(!weekendsVisible);
   }
 
   const handleDateClick = (arg) => {
     // todo: navigate to event details page
-    alert(arg.dateStr)
-  }
+    alert(arg.dateStr);
+  };
 
   return (
     <>
-    <Navbar />
-    <div className='calendar-app'>
-      <Sidebar
-        weekendsVisible={weekendsVisible}
-        handleWeekendsToggle={handleWeekendsToggle}
-        currentEvents={currentEvents}
-      />
-       <div className='calendar-main'>
-      <FullCalendar
-        plugins={[ dayGridPlugin, interactionPlugin ]}
-        dateClick={handleDateClick}
-        weekends={weekendsVisible}
-      />
-
+      <Navbar />
+      <div className="calendar-app">
+        <Sidebar
+          weekendsVisible={weekendsVisible}
+          handleWeekendsToggle={handleWeekendsToggle}
+          currentEvents={calendarEvents}
+        />
+        <div className="calendar-main">
+          <FullCalendar
+            plugins={[dayGridPlugin, interactionPlugin]}
+            dateClick={handleDateClick}
+            weekends={weekendsVisible}
+            events={calendarEvents} // Load saved posts into the calendar
+            eventColor="#BA0C2F"
+          />
+        </div>
       </div>
-    </div>
     </>
-  )
+  );
 
-  function Sidebar({ weekendsVisible, handleWeekendsToggle, currentEvents }) {
+  function Sidebar({ weekendsVisible, currentEvents }) {
     return (
-      <div className='demo-app-sidebar'>
-        <div className='demo-app-sidebar-section'>
-          <h2>Instructions</h2>
-          <ul>
-            <li>Select dates and you will be prompted to create a new event</li>
-            <li>Drag, drop, and resize events</li>
-            <li>Click an event to delete it</li>
-          </ul>
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <label>
-            <input
-              type='checkbox'
-              checked={weekendsVisible}
-              onChange={handleWeekendsToggle}
-            ></input>
-            toggle weekends
-          </label>
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <h2>All Events ({currentEvents.length})</h2>
+      <div className="calendar-sidebar">
+        <div className="calendar-sidebar-section">
+          <Typography variant="h4" color="#BA0C2F" align="center" sx={{ marginTop: 4 }}>
+            My Events ({currentEvents.length})
+          </Typography>
           <ul>
             {currentEvents.map((event) => (
               <SidebarEvent key={event.id} event={event} />
             ))}
           </ul>
         </div>
+        <div className="calendar-sidebar-section">
+          <label>
+            <FormControlLabel
+              sx={{ display: 'block' }}
+              control={
+                <Switch
+                  checked={weekendsVisible}
+                  onChange={() => setWeekendsVisible(!weekendsVisible)}
+                  name="Show Weekends"
+                  color="primary"
+                />
+              }
+              label="Show Weekends"
+            />
+          </label>
+        </div>
       </div>
-    )
+    );
   }
-  
+
   function SidebarEvent({ event }) {
     return (
       <li key={event.id}>
-        <b>{formatDate(event.start, {year: 'numeric', month: 'short', day: 'numeric'})}</b>
+        <b>
+          {formatDate(event.start, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          })}
+        </b>
         <i>{event.title}</i>
       </li>
-    )
+    );
   }
-} 
+}

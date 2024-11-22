@@ -66,7 +66,7 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1 }} /> {/* This Box pushes the content to the right */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/calendar" style={{ textDecoration: 'none', color: '#BA0C2F', marginRight: '20px' }}>
-              <Typography variant="body1" sx={{ fontWeight: 600 }} onClick={handleViewCalendar} >
+              <Typography variant="body1" sx={{ fontWeight: 600, marginRight: 2 }} onClick={handleViewCalendar} >
                 Calendar
               </Typography>
             </Link>

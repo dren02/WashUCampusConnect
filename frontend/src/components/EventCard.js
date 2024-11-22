@@ -78,9 +78,11 @@ const EventCard = ({ event, onDelete }) => { // Removed showRSVP prop
           <PlaceIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
           {address}
         </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {details_of_event}
+        <Typography variant="body2" sx={{ marginBottom: 1.5, color: 'text.secondary' }} className="event-description">
+        {details_of_event}
         </Typography>
+
+
       </CardContent>
       </div>
       <CardActions>

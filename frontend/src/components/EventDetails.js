@@ -12,6 +12,7 @@ import washuLogo from '../assets/washuLogo.png';
 import EditIcon from '@mui/icons-material/Edit';
 import '../styles/EventDetails.css';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -48,6 +49,10 @@ const EventDetails = () => {
     };
     fetchEvent();
   }, [id, currUser, refreshFlag]);
+
+  const handleBackClick = () => {
+    navigate('/main');
+  }
 
   const handleRSVP = async () => {
     setLoadingRSVP(true);
@@ -142,6 +147,15 @@ const EventDetails = () => {
         image={displayedImage}
         alt="Event Image"
       />
+      <ArrowBackIcon onClick={handleBackClick} t={2} sx={{
+        cursor: 'pointer',
+        fontSize: '2rem',
+        transition: 'transform 0.2s',
+        marginLeft: '20px',
+        '&:hover': {
+          transform: 'scale(1.2)',
+        },
+      }} />
       <Typography variant="h4" align="center" sx={{ marginBottom: 2, color: '#222', fontWeight: 'bold' }}>
         {event.name}
       </Typography>

@@ -9,10 +9,12 @@ import { fetchDisplayEvents } from './calendar-events';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function Calendar() {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [weekendsVisible, setWeekendsVisible] = React.useState(true);
+  const navigate = useNavigate();
 
   // Fetch savedPosts when the component mounts
   useEffect(() => {
@@ -29,9 +31,8 @@ export default function Calendar() {
     setWeekendsVisible(!weekendsVisible);
   }
 
-  const handleDateClick = (arg) => {
-    // todo: navigate to event details page
-    alert(arg.dateStr);
+  const handleEventClick = (info) => {
+    navigate(`/event/${info.event.id}`);
   };
 
   return (
@@ -46,7 +47,7 @@ export default function Calendar() {
         <div className="calendar-main">
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
-            dateClick={handleDateClick}
+            eventClick={handleEventClick}
             weekends={weekendsVisible}
             events={calendarEvents} // Load saved posts into the calendar
             eventColor="#BA0C2F"

@@ -66,7 +66,9 @@ const EventDetails = () => {
 
       if (hasRSVPed) {
         const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, formData, {
-          data: { username: currUser },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
         setSnackbarMessage(response.data.message || 'RSVP removed successfully!');
         setRsvps(prev => prev.filter(user => user !== currUser));
@@ -116,7 +118,11 @@ const EventDetails = () => {
   };
 
   const handleRSVPClick = () => {
-    setRsvpModalOpen(true);
+    if (!hasRSVPed) {
+      setRsvpModalOpen(true);
+    } else {
+      handleRSVP(false, false); // Directly call handleRSVP for un-RSVP without notification prompt
+    }
   };
 
   const handleRSVPConfirm = () => {

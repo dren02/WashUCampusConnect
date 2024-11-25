@@ -46,15 +46,26 @@ const EventDetails = () => {
     fetchEvent();
   }, [id, currUser]);
 
+<<<<<<< Updated upstream
   const handleRSVP = async () => {
     setLoadingRSVP(true);
+=======
+  const handleBackClick = () => {
+    navigate('/main');
+  }
+
+  const handleRSVP = async (isRSVPing, optIntoNotifications) => {
+    setLoadingRSVP(true); 
+>>>>>>> Stashed changes
     try {
       const formData = new FormData();
       formData.append('username', currUser);
 
       if (hasRSVPed) {
         const response = await axios.post(`http://localhost:8000/events/${id}/rsvp`, formData, {
-          data: { username: currUser },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
         setSnackbarMessage(response.data.message || 'RSVP removed successfully!');
         setRsvps(prev => prev.filter(user => user !== currUser));
@@ -103,6 +114,26 @@ const EventDetails = () => {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  const handleRSVPClick = () => {
+    if (!hasRSVPed) {
+      setRsvpModalOpen(true);
+    } else {
+      handleRSVP(false, false); // Directly call handleRSVP for un-RSVP without notification prompt
+    }
+  };
+  const handleRSVPConfirm = () => {
+    // Call handleRSVP with the appropriate parameters
+    handleRSVP(true, optIntoNotifications);
+    setRsvpModalOpen(false); // Close the modal after confirming
+  };
+
+  const handleModalClose = () => {
+    setRsvpModalOpen(false);
+  };
+
+>>>>>>> Stashed changes
   const handleEdit = () => navigate(`/edit-event/${id}`);
   const handleSnackbarClose = () => setSnackbarOpen(false);
 

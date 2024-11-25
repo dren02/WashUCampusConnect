@@ -4,10 +4,14 @@ import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Button from '@mui/material/Button';
-import { Paper, CardMedia } from '@mui/material';
+import { CardMedia } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import washuLogo from '../assets/washuLogo.png';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 
 const EventCard = ({ event, onDelete }) => { // Removed showRSVP prop
   const { id, name, date, time, address, details_of_event, username, image_url } = event;
@@ -48,49 +52,52 @@ const EventCard = ({ event, onDelete }) => { // Removed showRSVP prop
   };
 
   return (
-    <Paper className="event-card">
+    <Card sx={{ maxWidth: 345 }} >
       <div className="event-details" onClick={handleCardClick}>
-        <CardMedia
-          component="img"
-          sx={{
-            width: '100%',           
-            height: '150px',         
-            objectFit: 'contain',     
-            margin: '0 auto',         
-            borderRadius: '8px',      
-          }}
-          image={displayedImage}
-          alt="Event"
-        />
-        <h2 className="event-title"><strong>{name}</strong></h2>
-      </div>
-      <p className="event-user" onClick={handleUsernameClick}>{username}</p>
-      <div className="event-details" onClick={handleCardClick}>
-        <p className="event-date">
+      <CardMedia
+        sx={{ height: 180 }}
+        image={displayedImage}
+        title="event image"
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+          {name}
+        </Typography>
+        <Typography variant="body2" onClick={handleUsernameClick} sx={{ marginBottom: 1, color: 'text.secondary', cursor: 'pointer', '&:hover': {textDecoration: 'underline',},}}>
+          {username}
+        </Typography>
+        <Typography variant="body2" sx={{ marginBottom: 1, color: 'text.secondary' }}>
           <CalendarMonthIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
           {date}
-        </p>
-        <p className="event-time">
+        </Typography>
+        <Typography variant="body2" sx={{ marginBottom: 1, color: 'text.secondary' }}>
           <AccessTimeIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
           {time}
-        </p>
-        <p className="event-location">
+        </Typography>
+        <Typography variant="body2" sx={{ marginBottom: 1.5, color: 'text.secondary' }}>
           <PlaceIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} fontSize="small" /> 
           {address}
-        </p>
-        <p className="event-description">{details_of_event}</p>
+        </Typography>
+        <Typography variant="body2" sx={{ marginBottom: 1.5, color: 'text.secondary' }} className="event-description">
+        {details_of_event}
+        </Typography>
+
+
+      </CardContent>
       </div>
-      <div style={{ display: 'flex', marginTop: 'auto' }}>
-        <Button size="small" color="primary" onClick={handleSave}> Save </Button>
+      <CardActions>
+      {currUser != username && (
+        <Button size="small" onClick={handleSave}>Save</Button>
+      )}
         {username === currUser && (
           <>
             <Button size="small" color="error" onClick={handleDelete} sx={{ marginLeft: '10px' }}> Delete </Button>
             <Button size="small" color="secondary" onClick={handleEdit} sx={{ marginLeft: '10px' }}> Edit </Button>
           </>
         )}
-      </div>
-    </Paper>
+      </CardActions>
+    </Card>
   );
-};
+}
 
 export default EventCard;

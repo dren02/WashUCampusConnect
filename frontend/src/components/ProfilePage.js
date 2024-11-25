@@ -65,10 +65,11 @@ function ProfilePage() {
       setLoading(false);
     }
   };
+  
   // trigger fetchEvents(tab) on tab change
   useEffect(() => {
     fetchEvents(selectedTab);
-  }, [selectedTab]);
+  }, [selectedTab, userToFetch]);
 
   useEffect(() => {
     const fetchAboutMe = async () => {
@@ -104,9 +105,12 @@ function ProfilePage() {
           console.error('Failed to fetch saved events:', err);
         }
       }
+      else{
+        setSavedPosts([]);
+      }
     };
     fetchEventDetails();
-  }, [savedEventIds]);
+  }, [savedEventIds, userToFetch]);
 
   const handleDeleteEvent = async (id) => {
     try {
@@ -131,13 +135,14 @@ function ProfilePage() {
 
 
   const handleSearchSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission behavior
     if (!searchUsername.trim()) {
-      navigate(`/profile/${loggedInUser}`);  // Redirect to the logged-in user's profile if input is empty
+      navigate(`/profile/${loggedInUser}`);  // Navigate to the logged-in user's profile if input is empty
     } else {
       navigate(`/profile/${searchUsername}`);  // Navigate to the searched user's profile
     }
   };
+  
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -267,10 +272,12 @@ function ProfilePage() {
             {/* <ProfileMenu letter={username[0]} />  */}
             <Typography variant="h3">{username || loggedInUser}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 3 }}>
-              <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> {/* Display the aboutMe state */}
-              <MenuItem onClick={handleEditAbout}>
-                <EditIcon fontSize="small" />
-              </MenuItem>
+              <Typography variant="body1" sx={{ marginTop: 3 }}>{aboutMe}</Typography> 
+                {loggedInUser === username && (
+                  <MenuItem onClick={handleEditAbout}>
+                    <EditIcon fontSize="small" />
+                  </MenuItem>
+                )}
             </Box>
 
             {isEditModalVisible && (
@@ -314,6 +321,8 @@ function ProfilePage() {
                     key={event.id}
                     event={event}
                     onDelete={handleDeleteEvent}
+                    onUnsave={fetchEvents} 
+                    selectedTab={selectedTab}
                   />
                 ))
               ) : (

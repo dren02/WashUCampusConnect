@@ -7,6 +7,10 @@
     box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
     transition: transform 0.2s;
     background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 350px; 
+    overflow: hidden;
   }
   
   .event-card:hover {
@@ -23,7 +27,17 @@
     margin: 5px 0;
   }
   
-  .event-description, .event-user {
+  .event-description {
+    margin-top: 10px;
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-height: 50px;
+    
+  }
+
+  .event-user {
     margin-top: 10px;
     color: #555;
   }

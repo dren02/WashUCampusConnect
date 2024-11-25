@@ -10,6 +10,7 @@ import ResetPassword from './components/ResetPassword';
 import EventDetails from './components/EventDetails';
 import EditEvent from './components/EditEvent'; 
 import FeaturedEvents from './components/FeaturedEvents';
+import Calendar from './calendar'
 import './styles/App.css';
 
 function App() {
@@ -20,13 +21,13 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/main" element={<MainPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/event/:id" element={<EventDetails />} /> 
         <Route path="/edit-event/:id" element={<EditEvent />} />
         <Route path="/featured-events" element={<FeaturedEvents />} />
+        <Route path="/calendar" element={<Calendar />} />
       </Routes>
     </Router>
   );

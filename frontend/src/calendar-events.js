@@ -13,7 +13,8 @@ export async function fetchDisplayEvents() {
       .map(event => ({
         id: event.id,
         title: event.name,
-        start: event.date
+        start: event.date,
+        color: '#2c3e50'
       }));
     myPosts.push(...filteredMyPosts);
 
@@ -30,7 +31,8 @@ export async function fetchDisplayEvents() {
       const filteredSavedPosts = response.data.map(event => ({
         id: event.id,
         title: event.name,
-        start: event.date
+        start: event.date,
+        color: '#BA0C2F'
       }));
       savedPosts.push(...filteredSavedPosts);
     }

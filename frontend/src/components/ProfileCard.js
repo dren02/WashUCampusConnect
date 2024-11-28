@@ -107,7 +107,7 @@ const ProfileCard = ({ event, onDelete, onUnsave, selectedTab }) => {
                 </CardContent>
             </CardActionArea>
             <CardActions sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingRight: 2 }}>
-                {currUser != username && (
+                {currUser !== username && (
                 <Button size="small" color="primary" onClick={(e) => { e.stopPropagation(); isSaved ? handleUnsave() : handleSave(); }} sx={{ marginBottom: 6, marginTop: 8 }}>
                     {isSaved ? 'Unsave' : 'Save'}
                 </Button>

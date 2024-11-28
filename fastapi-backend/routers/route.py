@@ -11,7 +11,9 @@ from datetime import datetime, timedelta
 import aiosmtplib
 from email.mime.text import MIMEText
 import asyncio
+import pytz
 
+TIMEZONE = pytz.timezone('America/Chicago')
 
 router = APIRouter()
 
@@ -50,9 +52,27 @@ async def send_email(to_email: str, subject: str, body: str):
 
 
 # Function to schedule email notifications
-def schedule_email(event_id: str, email: str, event_name: str, event_date: str, event_time: str, event_address: str):
+def schedule_email(username: str, event_id: str, email: str, event_name: str, event_date: str, event_time: str, event_address: str):
     event_datetime = datetime.strptime(f"{event_date} {event_time}", "%Y-%m-%d %H:%M")
-    notification_time = event_datetime - timedelta(hours=24)
+    event_datetime = TIMEZONE.localize(event_datetime)
+    # Convert event time to UTC for scheduling
+    event_datetime_utc = event_datetime.astimezone(pytz.utc)
+    notification_time = event_datetime_utc - timedelta(hours=24)
+    email_body = f"""\
+Dear {username},
+
+This is a friendly reminder that you have RSVP'd to the event "{event_name}". Please find the event details below:
+
+Event Details:
+- Date: {event_date}
+- Time: {event_time}
+- Location: {event_address}
+
+We look forward to your presence. Should you have any questions or require further assistance, feel free to contact us.
+
+Thank you,  
+Campus Events Team
+"""
 
     # Wrapper to run async function in a synchronous context
     def run_async_send_email():
@@ -60,7 +80,7 @@ def schedule_email(event_id: str, email: str, event_name: str, event_date: str, 
             send_email(
                 to_email=email,
                 subject=f"Reminder: Upcoming Event - {event_name}",
-                body=f"Hello,\n\nThis is a reminder that you have RSVP'd to the event '{event_name}'.\n\nDetails:\nDate: {event_date}\nTime: {event_time}\nAddress: {event_address}\n\nThank you!",
+                body=email_body
             )
         )
 
@@ -156,6 +176,7 @@ async def add_rsvp(id: str, username: str = Form(...), notifications: bool = For
         if notifications:
             # Schedule email notification
             schedule_email(
+                username,
                 event_id=id,
                 email=EMAIL_ADDRESS,
                 event_name=event["name"],

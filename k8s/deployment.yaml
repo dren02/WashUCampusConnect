@@ -89,7 +89,7 @@ spec:
     - protocol: TCP
       port: 80  # Expose on port 80 externally
       targetPort: 3000
-  type: LoadBalancer  # Expose externally through LoadBalancer (can be ClusterIP in some cases)
+  type: NodePort  # Expose externally through LoadBalancer (can be ClusterIP in some cases)
 
 ---
 apiVersion: apps/v1
@@ -136,23 +136,7 @@ spec:
     - protocol: TCP
       port: 8000
       targetPort: 8000
-  type: ClusterIP  # Internal service exposed to other services in the cluster
+      nodePort: 30000
+  type: NodePort  # Internal service exposed to other services in the cluster
 
----
-# Ingress configuration to expose frontend externally
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: project-draft-ingress
-spec:
-  rules:
-    - host: "localhost"  # Replace with your domain
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: react-frontend
-                port:
-                  number: 80
+

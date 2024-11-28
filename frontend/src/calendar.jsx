@@ -10,19 +10,28 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 export default function Calendar() {
   const [calendarEvents, setCalendarEvents] = useState([]);
+  const [myPosts, setMyPosts] = useState([]);
+  const [savedPosts, setSavedPosts] = useState([]);
   const [weekendsVisible, setWeekendsVisible] = React.useState(true);
   const navigate = useNavigate();
+  const role = localStorage.getItem('role');
 
   // Fetch savedPosts when the component mounts
   useEffect(() => {
     const loadEvents = async () => {
-      const { savedPosts } = await fetchDisplayEvents();
-      setCalendarEvents(savedPosts);
-      console.log("here")
-      console.log(savedPosts)
+      const { myPosts, savedPosts  } = await fetchDisplayEvents();
+      setMyPosts(myPosts);
+      setSavedPosts(savedPosts);
+      const calendarEvents = [
+        ...myPosts.map((post) => ({ ...post, type: 'myPost' })), // Label each post type
+        ...savedPosts.map((post) => ({ ...post, type: 'savedPost' })),
+      ];
+      setCalendarEvents(calendarEvents);
+      console.log(savedPosts);
     };
     loadEvents();
   }, []);
@@ -42,7 +51,8 @@ export default function Calendar() {
         <Sidebar
           weekendsVisible={weekendsVisible}
           handleWeekendsToggle={handleWeekendsToggle}
-          currentEvents={calendarEvents}
+          myEvents={myPosts}
+          savedEvents={savedPosts}
         />
         <div className="calendar-main">
           <FullCalendar
@@ -50,22 +60,30 @@ export default function Calendar() {
             eventClick={handleEventClick}
             weekends={weekendsVisible}
             events={calendarEvents} // Load saved posts into the calendar
-            eventColor="#BA0C2F"
           />
         </div>
       </div>
     </>
   );
 
-  function Sidebar({ weekendsVisible, currentEvents }) {
+  function Sidebar({ weekendsVisible, myEvents, savedEvents }) {
     return (
       <div className="calendar-sidebar">
         <div className="calendar-sidebar-section">
           <Typography variant="h4" color="#BA0C2F" align="center" sx={{ marginTop: 4 }}>
-            My Events ({currentEvents.length})
+            My Events ({calendarEvents.length})
           </Typography>
           <ul>
-            {currentEvents.map((event) => (
+            {myEvents.map((event) => (
+              <SidebarEvent key={event.id} event={event} />
+            ))}
+            {role !== 'event_attendee' && 
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '3rem' }}>
+                <BookmarkIcon sx={{ color: '#BA0C2F' }}/> 
+                <Typography color="#BA0C2F">Saved Events</Typography>
+              </div>
+            }
+             {savedEvents.map((event) => (
               <SidebarEvent key={event.id} event={event} />
             ))}
           </ul>

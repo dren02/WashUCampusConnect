@@ -121,11 +121,17 @@ const EditEvent = () => {
                     margin="normal"
                     InputLabelProps={{ shrink: true }} 
                 />
+                {/* File Upload Section */}
+            <Box sx={{ marginTop: 2 }}>
+                <Typography variant="body1" sx={{ marginBottom: 1 }}>
+                    Upload Event Image:
+                </Typography>
                 <input
                     type="file"
                     onChange={(e) => setImage(e.target.files[0])}
                     accept="image/*"
                 />
+            </Box>
                 <Button variant="contained" type="submit">
                     Update Event
                 </Button>

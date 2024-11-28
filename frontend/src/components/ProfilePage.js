@@ -42,8 +42,11 @@ function ProfilePage() {
   const { username } = useParams(); // Get username from the URL params if it exists
   const userToFetch = username || loggedInUser;
   const [dropdownOpen, setDropdownOpen] = useState(false); 
-  const [searchUsername, setSearchUsername] = useState(''); 
+  const [searchUsername, setSearchUsername] = useState('');
+  const [allUsers, setAllUsers] = useState([]); // All users fetched from API
+  const [filteredUsers, setFilteredUsers] = useState([]); // Filtered results based on search
 
+   
   const fetchEvents = async (tab) => {
     setLoading(true);
     try {
@@ -143,6 +146,33 @@ function ProfilePage() {
     }
   };
   
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/auth'); 
+        setAllUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+  
+    fetchUsers();
+  }, []);
+  
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchUsername(query);
+  
+    if (query.trim() === '') {
+      setFilteredUsers([]); // Clear results if query is empty
+    } else {
+      const matches = allUsers.filter(user =>
+        user.username.toLowerCase().includes(query)
+      );
+      setFilteredUsers(matches);
+    }
+  };
+  
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -169,79 +199,93 @@ function ProfilePage() {
 
         {/* drop down content */}
         <Collapse in={dropdownOpen} sx={{ marginTop: '8px' }}>
-          <Box
-            component="form"
-            onSubmit={handleSearchSubmit}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              padding: '8px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-              width: '200px',
-            }}
-          >
-            <TextField
-              label="Username"
-              variant="outlined"
-              size="small"
-              value={searchUsername}
-              onChange={(e) => setSearchUsername(e.target.value)}
-              sx={{
-                width: '100%',
-                backgroundColor: '#fff',
-                borderRadius: '4px',
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: '#6D6D6D',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#9e9e9e',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#6D6D6D',
-                  },
-                },
-              }}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              
-              sx={{
-                width: '100%',
-                marginTop: '8px',
-                textTransform: 'none',
-                backgroundColor: '#4A4A4A', 
-                color: '#FFFFFF',           
-                '&:hover': {
-                  backgroundColor: '#333333', 
-                },
-              }}
-            >
-              Search
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => navigate(`/profile/${loggedInUser}`)}
-              sx={{
-                width: '100%',
-                marginTop: '8px',
-                textTransform: 'none',
-                backgroundColor: '#4A4A4A', 
-                color: '#FFFFFF',           
-                '&:hover': {
-                  backgroundColor: '#333333', 
-                },
-              }}
-            >
-              Return to Your Profile
-            </Button>
-          </Box>
-        </Collapse>
+  <Box
+    component="form"
+    onSubmit={handleSearchSubmit}
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      padding: '8px',
+      backgroundColor: '#f9f9f9',
+      borderRadius: '8px',
+      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+      width: '200px',
+    }}
+  >
+    <TextField
+      label="Username"
+      variant="outlined"
+      size="small"
+      value={searchUsername}
+      onChange={handleSearchChange}
+      sx={{
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: '4px',
+        marginBottom: '8px',
+      }}
+    />
+
+    {filteredUsers.length > 0 ? (
+      filteredUsers.map((user) => (
+        <Typography
+          key={user.id}
+          sx={{
+            cursor: 'pointer',
+            padding: '4px 0',
+            '&:hover': { textDecoration: 'underline' },
+          }}
+          onClick={() => navigate(`/profile/${user.username}`)}
+        >
+          {user.username}
+        </Typography>
+      ))
+    ) : (
+      searchUsername.trim() && (
+        <Typography sx={{ color: '#6D6D6D', marginTop: '8px' }}>
+          No such user found.
+        </Typography>
+      )
+    )}
+
+    <Button
+      type="submit"
+      variant="contained"
+      sx={{
+        width: '100%',
+        marginTop: '8px',
+        textTransform: 'none',
+        backgroundColor: '#4A4A4A',
+        color: '#FFFFFF',
+        '&:hover': {
+          backgroundColor: '#333333',
+        },
+      }}
+    >
+      Search
+    </Button>
+
+    <Button
+      variant="outlined"
+      color="secondary"
+      onClick={() => navigate(`/profile/${loggedInUser}`)}
+      sx={{
+        width: '100%',
+        marginTop: '8px',
+        textTransform: 'none',
+        backgroundColor: '#4A4A4A',
+        color: '#FFFFFF',
+        '&:hover': {
+          backgroundColor: '#333333',
+        },
+      }}
+    >
+      Return to Your Profile
+    </Button>
+  </Box>
+</Collapse>
+
       </Box>
 
 

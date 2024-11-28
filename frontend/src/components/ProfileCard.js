@@ -21,6 +21,14 @@ const ITEM_HEIGHT = 45;
 
 const options = ['Edit', 'Delete'];
 
+const truncateText = (text, wordLimit) => {
+    const words = text.split(' ');
+    if (words.length > wordLimit) {
+        return words.slice(0, wordLimit).join(' ') + '...';
+    }
+    return text;
+};
+
 const ProfileCard = ({ event, onDelete, onUnsave, selectedTab }) => {
     const { id, name, date, time, address, details_of_event, username, image_url } = event;
     const currUser = localStorage.getItem('username');
@@ -102,7 +110,7 @@ const ProfileCard = ({ event, onDelete, onUnsave, selectedTab }) => {
                         <PlaceIcon sx={{ marginRight: 1 }} fontSize="small" /> {address}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                        {details_of_event}
+                        {truncateText(details_of_event, 15)}
                     </Typography>
                 </CardContent>
             </CardActionArea>

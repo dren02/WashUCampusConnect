@@ -6,3 +6,5 @@ passlib==1.7.4
 python-jose==3.3.0
 python-multipart
 apscheduler==3.11.0
+aiosmtplib==3.0.2
+pytz==2024.2

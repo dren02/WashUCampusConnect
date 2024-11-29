@@ -138,13 +138,16 @@ function ProfilePage() {
 
 
   const handleSearchSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-    if (!searchUsername.trim()) {
-      navigate(`/profile/${loggedInUser}`);  // Navigate to the logged-in user's profile if input is empty
-    } else {
-      navigate(`/profile/${searchUsername}`);  // Navigate to the searched user's profile
+    event.preventDefault(); 
+    const userExists = allUsers.some(user => user.username === searchUsername.trim()); 
+  
+    if (!userExists) {
+      console.warn("User does not exist or casing is incorrect.");
+      return; // Do nothing if the user does not exist or casing is incorrect
     }
+    navigate(`/profile/${searchUsername}`);
   };
+  
   
   useEffect(() => {
     const fetchUsers = async () => {
@@ -160,18 +163,17 @@ function ProfilePage() {
   }, []);
   
   const handleSearchChange = (e) => {
-    const query = e.target.value.toLowerCase();
+    const query = e.target.value; 
     setSearchUsername(query);
   
     if (query.trim() === '') {
-      setFilteredUsers([]); // Clear results if query is empty
+      setFilteredUsers([]); 
     } else {
-      const matches = allUsers.filter(user =>
-        user.username.toLowerCase().includes(query)
-      );
+      const matches = allUsers.filter(user => user.username.includes(query));
       setFilteredUsers(matches);
     }
   };
+  
   
 
   return (
@@ -252,6 +254,7 @@ function ProfilePage() {
     <Button
       type="submit"
       variant="contained"
+      
       sx={{
         width: '100%',
         marginTop: '8px',
@@ -262,6 +265,7 @@ function ProfilePage() {
           backgroundColor: '#333333',
         },
       }}
+      
     >
       Search
     </Button>

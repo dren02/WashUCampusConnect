@@ -83,9 +83,11 @@ export default function Calendar() {
                 <Typography color="#BA0C2F">Saved Events</Typography>
               </div>
             }
-             {savedEvents.map((event) => (
-              <SidebarEvent key={event.id} event={event} />
-            ))}
+            <div className="saved-events">
+              {savedEvents.map((event) => (
+                <SidebarEvent key={event.id} event={event} />
+              ))}
+            </div>
           </ul>
         </div>
         <div className="calendar-sidebar-section">

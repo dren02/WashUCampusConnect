@@ -16,6 +16,10 @@ li {
   padding: 0;
 }
 
+.saved-events li::marker {
+  color: #BA0C2F;
+}
+
 b { /* used for event dates/times */
   margin-right: 3px;
 }

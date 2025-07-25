@@ -1,11 +1,16 @@
-# Project Name: Campus Events Website
-### Team members: Hayrettin Eren Yildiz, Demi Ren, Annie Shao
+# WashU CampusConnect
+CampusConnect is a platform that helps students discover, RSVP to, and interact with student events happening on campus.
+It supports two user types: event attendees and event creators allowing both discovery and management of student-led campus events.
 
-## Instructions & Link to Access
-http://104.154.252.3/
+## Team members
+* Hayrettin Eren Yildiz
+* Demi Ren
+* Annie Shao
+
+## Setup Instructions
 
 ### Frontend
-Change to frontend folder
+Navigate to the frontend directory
 ```
 cd frontend
 ```
@@ -21,7 +26,7 @@ npm start
 ### Backend
 Ensure Python 3.7 or newer is installed: https://www.python.org/downloads/
 
-Change to backend folder
+Navigate to the backend directory
 ```
 cd fastapi-backend
 ```
@@ -42,3 +47,4 @@ Build and start services defined in `docker-compose.yml`
 ```
 docker-compose up --build
 ```
+This will launch both the frontend and backend services.
